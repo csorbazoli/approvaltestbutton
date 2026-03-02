@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+  
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="org.herba.plugin.junit"
+            name="JUnit Extensions">
+      </category>
+   </extension>
+
+   <!-- Extension for JUnit Results View contribution 
+   	deprecated format - ->
+   <extension
+         point="org.eclipse.ui.viewActions">
+      <viewContribution
+            id="org.herba.plugin.junit.resultviewaction"
+            targetID="org.eclipse.jdt.junit.ResultView">
+         <action
+               id="org.herba.plugin.junit.approvetestresultaction"
+               label="Approve Test Result"
+               icon="res/icons/approve.png"
+               class="org.herba.plugin.junit.approvaltest.actions.ApproveTestResultsAction"
+               toolbarPath="normal"
+               enablesFor="1"/>
+      </viewContribution>
+   </extension -->
+
+   <!-- Define the command -->
+   <extension point="org.eclipse.ui.commands">
+      <command
+            description="Overwrite expected result with actual"
+            id="org.herba.plugin.junit.approveTestResult"
+            name="Approve Test Result">
+      </command>
+   </extension>
+
+   <!-- Define the command handler -->
+   <extension point="org.eclipse.ui.handlers">
+      <handler
+            commandId="org.herba.plugin.junit.approveTestResult"
+            class="org.herba.plugin.junit.approvaltest.commands.ApproveTestResultCommand">
+         <enabledWhen>
+            <with variable="selection">
+               <iterate
+                     ifEmpty="true"
+                     operator="or">
+                  <adapt type="org.herba.plugin.junit.approvaltest.handlers.ComparisonFailureSelection"/>
+               </iterate>
+            </with>
+         </enabledWhen>
+      </handler>
+   </extension>
+
+   <!-- Add toolbar button to JUnit Results View -->
+   <extension point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="toolbar:org.eclipse.jdt.junit.ResultView">
+         <command
+               commandId="org.herba.plugin.junit.approveTestResult"
+               icon="res/icons/approve_doc_solid.png"
+               label="Approve test results"
+               tooltip="Overwrite expected results with actual"
+               id="org.herba.plugin.junit.compareToolbarButton">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.eclipse.jdt.junit.model.ITestElement"
+            class="org.herba.plugin.junit.approvaltest.factories.ComparisonFailureSelectionAdapterFactory">
+         <adapter
+               type="org.herba.plugin.junit.approvaltest.handlers.ComparisonFailureSelection">
+         </adapter>
+      </factory>
+   </extension>
+
+</plugin>
