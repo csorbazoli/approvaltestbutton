@@ -2,6 +2,8 @@ package org.herba.plugin.junit.approvaltest.handlers;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.jdt.junit.model.ITestElement;
 import org.herba.plugin.junit.approvaltest.models.ComparisonFailureDto;
@@ -13,6 +15,13 @@ import com.spun.util.io.FileUtils;
  * ComparisonFailure. Used for command enablement in the Eclipse UI.
  */
 public class ComparisonFailureSelection {
+
+    private static final String PATH_CHAR_GROUP = "[a-zA-Z0-9_\\-\\{\\}+\\(\\)=\\[\\],@~#;%\\$\\!\\.]";
+    private static final String FILENAME_REGEXP = PATH_CHAR_GROUP + "+\\.\\w+";
+    private static final String SIMPLE_PATH_CHAR_GROUP = "[^:\\s]";
+    private static final String PATH_REGEXP = "(\\w:/|/|\\./|\\.\\./|" + SIMPLE_PATH_CHAR_GROUP + "+/)("
+            + SIMPLE_PATH_CHAR_GROUP + "+/)*";
+    private static Pattern FILE_PATH_PATTERN = Pattern.compile(PATH_REGEXP + FILENAME_REGEXP);
 
     private ITestElement testElement;
     private ComparisonFailureDto comparisonFailure;
@@ -33,7 +42,8 @@ public class ComparisonFailureSelection {
             String failureTrace = element.getFailureTrace().getTrace();
             if ((failureTrace != null)) {
                 if (isComparisonFailure(element)) {
-                    return convertToDto(element, failureTrace);
+                    ComparisonFailureDto ret = convertToDto(element, failureTrace);
+                    return ret.getFilePath() == null ? null : ret;
                 } else if (isApprovalTestError(element)) {
                     return convertFromApprovalTestError(element, failureTrace);
                 }
@@ -63,13 +73,43 @@ public class ComparisonFailureSelection {
         return new ComparisonFailureDto(firstLineFrom(failureTrace),
                 element.getFailureTrace().getExpected(),
                 element.getFailureTrace().getActual(),
-                getFilePathFromFailure(element));
+                getFilePathFromFailure(failureTrace));
     }
 
-    private File getFilePathFromFailure(ITestElement element) {
-        // todo: extract file information from original assertion
-        // or the error message
+    private File getFilePathFromFailure(String failureTrace) {
+        // TODO get patterns or prefixes for assertion types
+        // e.g. Approved:PATTERN
+        // in file PATTERN
+        // what should happen if there are multiple paths? there could be a path in the
+        // expected/actual value as well!
+        String extracted = extractRelevantPartOfTrace(failureTrace);
+        Matcher path = Pattern.compile(PATH_REGEXP).matcher(extracted);
+        if (path.find()) {
+            String p = path.group();
+            System.out.println(p);
+        }
+        Matcher filename = Pattern.compile(FILENAME_REGEXP).matcher(extracted);
+        if (filename.find()) {
+            String p = filename.group();
+            System.out.println(p);
+        }
+        Matcher m = FILE_PATH_PATTERN.matcher(extracted);
+        if (m.find()) {
+            // might need a default base folder for relative paths
+            String found = m.group();
+            System.out.println(found);
+            return new File(found);
+        }
         return null;
+    }
+
+    private String extractRelevantPartOfTrace(String failureTrace) {
+        String ret = failureTrace.substring(failureTrace.indexOf(':') + 1)
+                .replace('\\', '/');
+        if (ret.contains("expected:") && ret.contains("but was:")) {
+            ret = ret.substring(0, ret.indexOf("expected:"));
+        }
+        return ret;
     }
 
     private ComparisonFailureDto convertFromApprovalTestError(ITestElement element, String failureTrace) {
@@ -102,7 +142,7 @@ public class ComparisonFailureSelection {
     private String firstLineFrom(String content) {
         String trimmed = content.trim();
         int pos = trimmed.indexOf('\n');
-        return pos > 0 ? trimmed.substring(0, pos) : trimmed;
+        return pos > 0 ? trimmed.substring(0, pos).trim() : trimmed;
     }
 
     public ITestElement getTestElement() {

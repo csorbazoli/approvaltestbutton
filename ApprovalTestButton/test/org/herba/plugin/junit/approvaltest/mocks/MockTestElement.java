@@ -6,21 +6,25 @@ import java.io.StringWriter;
 import org.eclipse.jdt.junit.model.ITestElement;
 import org.eclipse.jdt.junit.model.ITestElementContainer;
 import org.eclipse.jdt.junit.model.ITestRunSession;
+import org.junit.ComparisonFailure;
 
 public class MockTestElement implements ITestElement {
 
     private final FailureTrace failureTrace;
     private boolean comparisonFailure;
 
-    public MockTestElement(String message, String expected, String actual) {
-        this(message, message.contains("but was:"), expected, actual);
+	public MockTestElement(Throwable error) {
+		StringWriter stringWriter = new StringWriter();
+		error.printStackTrace(new PrintWriter(stringWriter));
+		failureTrace = new FailureTrace(stringWriter.toString(), null, null);
+		this.comparisonFailure = false;
     }
 
-    public MockTestElement(String message, boolean comparisonFailure, String expected, String actual) {
+	public MockTestElement(String message, String expected, String actual) {
         StringWriter stringWriter = new StringWriter();
-        new Exception("SACKTRACE INFO").printStackTrace(new PrintWriter(stringWriter));
-        failureTrace = new FailureTrace(message + "\n" + stringWriter.toString(), expected, actual);
-        this.comparisonFailure = comparisonFailure;
+		new ComparisonFailure(message, expected, actual).printStackTrace(new PrintWriter(stringWriter));
+        failureTrace = new FailureTrace(stringWriter.toString(), expected, actual);
+		this.comparisonFailure = true;
     }
 
     // this method is implemented in the internal class:

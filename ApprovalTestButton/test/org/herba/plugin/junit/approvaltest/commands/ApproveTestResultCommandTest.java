@@ -34,7 +34,7 @@ public class ApproveTestResultCommandTest {
     @Test
     public void testHandleSelection_notTestElementWithComparisonInfo() throws Exception {
         // given
-        Object selectedElement = new MockTestCaseElement("something failed", false, "0", "1");
+        Object selectedElement = new MockTestCaseElement(new RuntimeException("something failed"));
         // when
         boolean actual = underTest.handleSelection(selectedElement);
         // then
@@ -44,7 +44,7 @@ public class ApproveTestResultCommandTest {
     @Test
     public void testHandleSelection_testElementWithComparisonInfoWithoutFilePath() throws Exception {
         // given
-        Object selectedElement = new MockTestCaseElement("something failed", true, "0", "1");
+        Object selectedElement = new MockTestCaseElement("something failed", "0", "1");
         // when
         boolean actual = underTest.handleSelection(selectedElement);
         // then
@@ -55,7 +55,7 @@ public class ApproveTestResultCommandTest {
     public void testHandleSelection_testElementWithComparisonInfoWithRelativeFilePath() throws Exception {
         // given
         Object selectedElement = new MockTestCaseElement("test result does not match test-resources/result/sample.txt",
-                true, "0", "1");
+                "0", "1");
         // when
         boolean actual = underTest.handleSelection(selectedElement);
         // then
@@ -72,9 +72,9 @@ public class ApproveTestResultCommandTest {
         // given
         File approvalTestReceived = new File("test-resources/approvaltest", "SampleServiceTest.testCase.received.txt");
         File approvalTestApproved = new File("test-resources/approvaltest", "SampleServiceTest.testCase.approved.txt");
-        ITestElement selectedElement = new MockTestCaseElement("java.lang.Error: Failed Approval\n"
-                + "                // Approved:" + approvalTestApproved.getAbsolutePath()
-                + "                // Received:" + approvalTestReceived.getAbsolutePath(), false, null, null);
+        ITestElement selectedElement = new MockTestCaseElement(new AssertionError("Failed Approval\n"
+                + "Approved:" + approvalTestApproved.getAbsolutePath()
+                + "\nReceived:" + approvalTestReceived.getAbsolutePath()));
         // when
         boolean actual = underTest.handleSelection(selectedElement);
         // then

@@ -16,22 +16,54 @@ public class ComparisonFailureSelectionTest {
     private ComparisonFailureSelection underTest;
 
     @Test
-    public void testGetComparisonFailure() throws Exception {
+    public void testGetComparisonFailure_no_file_path_in_message() throws Exception {
         // given
-        ITestElement testElement = new MockTestCaseElement("error message", true, "expected value", "actual value");
+        ITestElement testElement = new MockTestCaseElement("error message", "expected value", "actual value");
+        underTest = new ComparisonFailureSelection(testElement);
+        // when
+        ComparisonFailureDto actual = underTest.getComparisonFailure();
+        // then
+        assertThat(actual).isNull();
+        assertThat(underTest.hasComparisonFailure()).isFalse();
+    }
+
+    @Test
+    public void testGetComparisonFailure_with_path() throws Exception {
+        // given
+        ITestElement testElement = new MockTestCaseElement("error message for c:/myproject/src/test/resources/test.txt",
+                "expected value", "actual value");
         underTest = new ComparisonFailureSelection(testElement);
         // when
         ComparisonFailureDto actual = underTest.getComparisonFailure();
         // then
         assertThat(underTest.hasComparisonFailure()).isTrue();
+        assertThat(actual.getFilePath()).isNotNull();
+        assertThat(actual.getFilePath().getPath().replace('\\', '/'))
+                .isEqualTo("c:/myproject/src/test/resources/test.txt");
         TestUtils.assertTestFileEquals("selection/ComparisonFailureDto.json", actual);
         assertThat(underTest.getTestElement()).isEqualTo(testElement);
     }
 
     @Test
+    public void testGetComparisonFailure_uncommon_chars() throws Exception {
+        // given
+        ITestElement testElement = new MockTestCaseElement(
+                "error message for c:/myproject/src/test-resources/abc-123_{}+()=[],@~#;%$!.txt",
+                "expected value", "actual value");
+        underTest = new ComparisonFailureSelection(testElement);
+        // when
+        ComparisonFailureDto actual = underTest.getComparisonFailure();
+        // then
+        assertThat(underTest.hasComparisonFailure()).isTrue();
+        assertThat(actual.getFilePath()).isNotNull();
+        assertThat(actual.getFilePath().getPath().replace('\\', '/'))
+                .isEqualTo("c:/myproject/src/test-resources/abc-123_{}+()=[],@~#;%$!.txt");
+    }
+
+    @Test
     public void testGetComparisonFailure_shouldReturnNullIfNotComparisonFailure() throws Exception {
         // given
-        ITestElement testElement = new MockTestCaseElement("error message", false, "expected value", "actual value");
+        ITestElement testElement = new MockTestCaseElement(new RuntimeException("error message"));
         underTest = new ComparisonFailureSelection(testElement);
         // when
         ComparisonFailureDto actual = underTest.getComparisonFailure();
@@ -45,15 +77,40 @@ public class ComparisonFailureSelectionTest {
         // given
         File approvalTestReceived = new File("test-resources/approvaltest", "SampleServiceTest.testCase.received.txt");
         File approvalTestApproved = new File("test-resources/approvaltest", "SampleServiceTest.testCase.approved.txt");
-        ITestElement testElement = new MockTestCaseElement("java.lang.Error: Failed Approval\n"
-                + "                // Approved:" + approvalTestApproved.getAbsolutePath()
-                + "                // Received:" + approvalTestReceived.getAbsolutePath(), false, null, null);
+        ITestElement testElement = new MockTestCaseElement(new AssertionError("Failed Approval\r\n"
+                + "Approved:" + approvalTestApproved.getAbsolutePath() + "\r\n"
+                + "Received:" + approvalTestReceived.getAbsolutePath()));
         underTest = new ComparisonFailureSelection(testElement);
         // when
         ComparisonFailureDto actual = underTest.getComparisonFailure();
         // then
         assertThat(underTest.hasComparisonFailure()).isTrue();
+        assertThat(actual.getFilePath()).isNotNull();
+        assertThat(actual.getFilePath().getAbsolutePath()).isEqualTo(approvalTestApproved.getAbsolutePath());
         TestUtils.assertTestFileEquals("selection/ComparisonFailureDto_fromApprovalError.json", actual);
+        assertThat(underTest.getTestElement()).isEqualTo(testElement);
+    }
+
+    @Test
+    public void testGetComparisonFailure_shouldReturnTrueIfComparisonFailureWithApprovalErrorMessage()
+            throws Exception {
+        // given
+        File approvalTestReceived = new File("test-resources/approvaltest", "SampleServiceTest.testCase.received.txt");
+        File approvalTestApproved = new File("test-resources/approvaltest", "SampleServiceTest.testCase.approved.txt");
+        ITestElement testElement = new MockTestCaseElement(
+                "Failed Approval\r\n"
+                        + "Approved:" + approvalTestApproved.getAbsolutePath() + "\r\n"
+                        + "Received:" + approvalTestReceived.getAbsolutePath(),
+                "expected text",
+                "actual text");
+        underTest = new ComparisonFailureSelection(testElement);
+        // when
+        ComparisonFailureDto actual = underTest.getComparisonFailure();
+        // then
+        assertThat(underTest.hasComparisonFailure()).isTrue();
+        assertThat(actual.getFilePath()).isNotNull();
+        assertThat(actual.getFilePath().getAbsolutePath()).isEqualTo(approvalTestApproved.getAbsolutePath());
+        TestUtils.assertTestFileEquals("selection/ComparisonFailureDto_fromApprovalMessage.json", actual);
         assertThat(underTest.getTestElement()).isEqualTo(testElement);
     }
 

@@ -4,8 +4,12 @@ import org.eclipse.jdt.junit.model.ITestCaseElement;
 
 public class MockTestCaseElement extends MockTestElement implements ITestCaseElement {
 
-    public MockTestCaseElement(String message, boolean comparisonFailure, String expected, String actual) {
-        super(message, comparisonFailure, expected, actual);
+	public MockTestCaseElement(Throwable error) {
+		super(error);
+	}
+
+	public MockTestCaseElement(String message, String expected, String actual) {
+		super(message, expected, actual);
     }
 
     @Override

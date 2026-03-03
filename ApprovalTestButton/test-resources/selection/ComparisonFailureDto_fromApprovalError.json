@@ -1,5 +1,5 @@
 {
-  "message" : "java.lang.Error: Failed Approval",
+  "message" : "java.lang.AssertionError: Failed Approval",
   "actual" : "",
   "expected" : "NEW\n"
 }
