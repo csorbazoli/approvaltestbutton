@@ -34,6 +34,11 @@
             id="org.herba.plugin.junit.approveTestResult"
             name="Approve Test Result">
       </command>
+      <command
+            description="Overwrite all expected results with actual"
+            id="org.herba.plugin.junit.approveAllTestResults"
+            name="Approve All Test Results">
+      </command>
    </extension>
 
    <!-- Define the command handler -->
@@ -44,7 +49,20 @@
          <enabledWhen>
             <with variable="selection">
                <iterate
-                     ifEmpty="true"
+                     ifEmpty="false"
+                     operator="or">
+                  <adapt type="org.herba.plugin.junit.approvaltest.handlers.ComparisonFailureSelection"/>
+               </iterate>
+            </with>
+         </enabledWhen>
+      </handler>
+      <handler
+            commandId="org.herba.plugin.junit.approveAllTestResults"
+            class="org.herba.plugin.junit.approvaltest.commands.ApproveAllTestResultsCommand">
+         <enabledWhen>
+            <with variable="selection">
+               <iterate
+                     ifEmpty="false"
                      operator="or">
                   <adapt type="org.herba.plugin.junit.approvaltest.handlers.ComparisonFailureSelection"/>
                </iterate>
@@ -59,10 +77,17 @@
             locationURI="toolbar:org.eclipse.jdt.junit.ResultView">
          <command
                commandId="org.herba.plugin.junit.approveTestResult"
-               icon="res/icons/approve_doc_solid.png"
+               icon="res/icons/approved_text.png"
                label="Approve test results"
-               tooltip="Overwrite expected results with actual"
-               id="org.herba.plugin.junit.compareToolbarButton">
+               tooltip="Overwrite expected result with actual"
+               id="org.herba.plugin.junit.approveToolbarButton">
+         </command>
+         <command
+               commandId="org.herba.plugin.junit.approveAllTestResults"
+               icon="res/icons/approved_all_text.png"
+               label="Approve all test results"
+               tooltip="Overwrite all expected results with actual"
+               id="org.herba.plugin.junit.approveAllToolbarButton">
          </command>
       </menuContribution>
    </extension>

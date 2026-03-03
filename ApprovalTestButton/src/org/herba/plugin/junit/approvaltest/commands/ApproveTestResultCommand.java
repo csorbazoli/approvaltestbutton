@@ -68,10 +68,11 @@ public class ApproveTestResultCommand extends AbstractHandler {
     }
 
     protected boolean confirmOverwrite(ComparisonFailureDto element) {
+        // TODO add remember choice option
         return MessageDialog.openQuestion(null, "Comparison Failure",
-                String.format("Approve test result by overwriting: %s\n"
-                        + "With expected value: %s",
-                        element.getFilePath(),
-                        element.getActual()));
+                String.format("Approve test result by overwriting\n"
+                        + "%s\n"
+                        + "with expected value",
+                        element.getFilePath()));
     }
 }

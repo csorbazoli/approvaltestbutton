@@ -12,8 +12,9 @@ public class MockTestElement implements ITestElement {
 
     private final FailureTrace failureTrace;
     private boolean comparisonFailure;
+    private MockTestElementContainer parentContainer;
 
-	public MockTestElement(Throwable error) {
+    public MockTestElement(Throwable error) {
 		StringWriter stringWriter = new StringWriter();
 		error.printStackTrace(new PrintWriter(stringWriter));
 		failureTrace = new FailureTrace(stringWriter.toString(), null, null);
@@ -33,6 +34,10 @@ public class MockTestElement implements ITestElement {
         return comparisonFailure;
     }
 
+    public void setParentContainer(MockTestElementContainer parentContainer) {
+        this.parentContainer = parentContainer;
+    }
+
     @Override
     public double getElapsedTimeInSeconds() {
         throw new UnsupportedOperationException("NOT_IMPLEMENTED");
@@ -45,7 +50,7 @@ public class MockTestElement implements ITestElement {
 
     @Override
     public ITestElementContainer getParentContainer() {
-        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
+        return parentContainer;
     }
 
     @Override

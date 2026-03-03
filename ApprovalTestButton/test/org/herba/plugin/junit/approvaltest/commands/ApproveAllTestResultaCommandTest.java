@@ -1,0 +1,99 @@
+package org.herba.plugin.junit.approvaltest.commands;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.File;
+import java.util.List;
+
+import org.herba.plugin.junit.approvaltest.mocks.MockTestCaseElement;
+import org.herba.plugin.junit.approvaltest.mocks.MockTestElementContainer;
+import org.junit.Test;
+
+import testutils.TestUtils;
+
+public class ApproveAllTestResultaCommandTest {
+
+    boolean confirmationAnswer = true;
+    List<File> listCapture;
+    MockTestCaseElement firstTestCase;
+    MockTestElementContainer testContainer;
+    File approvalTestApproved;
+
+    private ApproveAllTestResultsCommand underTest = new ApproveAllTestResultsCommand() {
+        @Override
+        protected boolean confirmOverwrite(List<File> files) {
+            listCapture = files;
+            return confirmationAnswer;
+        };
+    };
+
+    @Test
+    public void testHandleSelection_shouldHandleTestCasesWithFileComparisonResult() throws Exception {
+        // given
+        initElements();
+        // when
+        boolean actual = underTest.handleSelection(firstTestCase);
+        // then
+        assertThat(actual).isTrue();
+        File testFile = new File("test-resources/result/sample.txt");
+        assertThat(testFile).canRead();
+        String content = TestUtils.readTestFile("result/sample.txt");
+        testFile.delete();
+        assertThat(approvalTestApproved).canRead();
+        String approvedContent = TestUtils.readTestFile("approvaltest/SampleServiceTest.testCase.approved.txt");
+        approvalTestApproved.delete();
+        assertThat(content).isEqualTo("1");
+        assertThat(approvedContent).isEqualTo("NEW");
+        assertThat(listCapture).hasSize(2);
+    }
+
+    @Test
+    public void testHandleSelection_shouldHandleTestCasesInContainerWithFileComparisonResult() throws Exception {
+        // given
+        initElements();
+        // when
+        boolean actual = underTest.handleSelection(testContainer);
+        // then
+        assertThat(actual).isTrue();
+        File testFile = new File("test-resources/result/sample.txt");
+        assertThat(testFile).canRead();
+        String content = TestUtils.readTestFile("result/sample.txt");
+        testFile.delete();
+        assertThat(approvalTestApproved).canRead();
+        String approvedContent = TestUtils.readTestFile("approvaltest/SampleServiceTest.testCase.approved.txt");
+        approvalTestApproved.delete();
+        assertThat(content).isEqualTo("1");
+        assertThat(approvedContent).isEqualTo("NEW");
+        assertThat(listCapture).hasSize(2);
+    }
+
+    @Test
+    public void testHandleSelection_notConfirmed_shouldNotOverwriteFiles() throws Exception {
+        // given
+        initElements();
+        confirmationAnswer = false;
+        // when
+        boolean actual = underTest.handleSelection(testContainer);
+        // then
+        assertThat(actual).isFalse();
+        File testFile = new File("test-resources/result/sample.txt");
+        assertThat(testFile).doesNotExist();
+        assertThat(approvalTestApproved).doesNotExist();
+        assertThat(listCapture).hasSize(2);
+    }
+
+    private void initElements() {
+        firstTestCase = new MockTestCaseElement(new RuntimeException("something failed"));
+        File approvalTestReceived = new File("test-resources/approvaltest", "SampleServiceTest.testCase.received.txt");
+        approvalTestApproved = new File("test-resources/approvaltest", "SampleServiceTest.testCase.approved.txt");
+        MockTestCaseElement approvalTestElement = new MockTestCaseElement(new AssertionError("Failed Approval\n"
+                + "Approved:" + approvalTestApproved.getAbsolutePath()
+                + "\nReceived:" + approvalTestReceived.getAbsolutePath()));
+        testContainer = new MockTestElementContainer(firstTestCase,
+                new MockTestCaseElement("something failed", "0", "1"),
+                new MockTestCaseElement("test result does not match test-resources/result/sample.txt",
+                        "0", "1"),
+                approvalTestElement);
+    }
+
+}

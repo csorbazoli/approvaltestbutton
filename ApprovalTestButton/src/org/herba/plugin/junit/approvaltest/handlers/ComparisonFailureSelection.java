@@ -2,6 +2,7 @@ package org.herba.plugin.junit.approvaltest.handlers;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,6 +16,8 @@ import com.spun.util.io.FileUtils;
  * ComparisonFailure. Used for command enablement in the Eclipse UI.
  */
 public class ComparisonFailureSelection {
+
+    private static final Logger logger = Logger.getLogger(ComparisonFailureSelection.class.getName());
 
     private static final String PATH_CHAR_GROUP = "[a-zA-Z0-9_\\-\\{\\}+\\(\\)=\\[\\],@~#;%\\$\\!\\.]";
     private static final String FILENAME_REGEXP = PATH_CHAR_GROUP + "+\\.\\w+";
@@ -83,22 +86,14 @@ public class ComparisonFailureSelection {
         // what should happen if there are multiple paths? there could be a path in the
         // expected/actual value as well!
         String extracted = extractRelevantPartOfTrace(failureTrace);
-        Matcher path = Pattern.compile(PATH_REGEXP).matcher(extracted);
-        if (path.find()) {
-            String p = path.group();
-            System.out.println(p);
-        }
-        Matcher filename = Pattern.compile(FILENAME_REGEXP).matcher(extracted);
-        if (filename.find()) {
-            String p = filename.group();
-            System.out.println(p);
-        }
         Matcher m = FILE_PATH_PATTERN.matcher(extracted);
         if (m.find()) {
             // might need a default base folder for relative paths
             String found = m.group();
-            System.out.println(found);
+            logger.info("File path '" + found + "' found in error trace: " + extracted);
             return new File(found);
+        } else {
+            logger.fine("File path not found in error trace: " + extracted);
         }
         return null;
     }
