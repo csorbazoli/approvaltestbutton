@@ -9,12 +9,16 @@ import org.herba.plugin.junit.approvaltest.mocks.MockTestCaseElement;
 import org.herba.plugin.junit.approvaltest.mocks.MockTestElementContainer;
 import org.junit.Test;
 
+import com.spun.util.io.FileUtils;
+
 import testutils.TestUtils;
 
 public class ApproveAllTestResultaCommandTest {
 
     boolean confirmationAnswer = true;
     List<File> listCapture;
+    String errorMessageCapture;
+    Throwable errorExceptionCapture;
     MockTestCaseElement firstTestCase;
     MockTestElementContainer testContainer;
     File approvalTestApproved;
@@ -24,7 +28,13 @@ public class ApproveAllTestResultaCommandTest {
         protected boolean confirmOverwrite(List<File> files) {
             listCapture = files;
             return confirmationAnswer;
-        };
+        }
+
+        @Override
+        protected void showError(String message, Throwable exc) {
+            errorMessageCapture = message;
+            errorExceptionCapture = exc;
+        }
     };
 
     @Test
@@ -69,6 +79,29 @@ public class ApproveAllTestResultaCommandTest {
 
     @Test
     public void testHandleSelection_notConfirmed_shouldNotOverwriteFiles() throws Exception {
+        // given
+        initElements();
+        File testFile = new File("test-resources/result/sample.txt");
+        testFile.setWritable(true);
+        FileUtils.writeFile(testFile, "original content");
+        testFile.setWritable(false);
+        // when
+        boolean actual = underTest.handleSelection(testContainer);
+        // then
+        assertThat(errorMessageCapture)
+                .startsWith("Failed to overwrite test resource");
+        assertThat(errorExceptionCapture).isNotNull();
+        assertThat(actual).isFalse();
+        assertThat(testFile).exists()
+                .hasContent("original content");
+        testFile.setWritable(true);
+        testFile.delete();
+        assertThat(approvalTestApproved).doesNotExist();
+        assertThat(listCapture).hasSize(2);
+    }
+
+    @Test
+    public void testHandleSelection_shouldStopAtFirstFailure() throws Exception {
         // given
         initElements();
         confirmationAnswer = false;
