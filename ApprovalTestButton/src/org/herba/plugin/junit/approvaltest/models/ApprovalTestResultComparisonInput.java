@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
-import java.util.logging.Logger;
 
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.CompareEditorInput;
@@ -21,7 +20,8 @@ import com.spun.util.io.FileUtils;
 
 public class ApprovalTestResultComparisonInput extends CompareEditorInput {
 
-    private static final Logger logger = Logger.getLogger(ApprovalTestResultComparisonInput.class.getName());
+    // private static final Logger logger =
+    // Logger.getLogger(ApprovalTestResultComparisonInput.class.getName());
 
     private final String actualContent;
     private final String expectedContent;

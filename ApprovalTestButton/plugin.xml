@@ -69,7 +69,7 @@
                <iterate
                      ifEmpty="false"
                      operator="or">
-                  <adapt type="org.herba.plugin.junit.approvaltest.handlers.ComparisonFailureSelection"/>
+                  <adapt type="org.herba.plugin.junit.approvaltest.handlers.ComparisonFailureSelectionAny"/>
                </iterate>
             </with>
          </enabledWhen>
@@ -101,7 +101,7 @@
                icon="res/icons/compare_text.png"
                label="Compare test result"
                style="push"
-               tooltip="Open compare view to review differences">
+               tooltip="Open compare view to review/approve results">
          </command>
          <command
                commandId="org.herba.plugin.junit.approveTestResult"
@@ -126,6 +126,9 @@
             class="org.herba.plugin.junit.approvaltest.factories.ComparisonFailureSelectionAdapterFactory">
          <adapter
                type="org.herba.plugin.junit.approvaltest.handlers.ComparisonFailureSelection">
+         </adapter>
+         <adapter
+               type="org.herba.plugin.junit.approvaltest.handlers.ComparisonFailureSelectionAny">
          </adapter>
       </factory>
    </extension>

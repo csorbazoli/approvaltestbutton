@@ -3,17 +3,22 @@ package org.herba.plugin.junit.approvaltest.factories;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.jdt.junit.model.ITestElement;
 import org.herba.plugin.junit.approvaltest.handlers.ComparisonFailureSelection;
+import org.herba.plugin.junit.approvaltest.handlers.ComparisonFailureSelectionAny;
 
 public class ComparisonFailureSelectionAdapterFactory implements IAdapterFactory {
 
     @Override
     public <T> T getAdapter(Object adaptable, Class<T> adapterType) {
-        if ((adapterType == ComparisonFailureSelection.class) && (adaptable instanceof ITestElement)) {
+        if (adaptable instanceof ITestElement) {
             ITestElement testElement = (ITestElement) adaptable;
-            ComparisonFailureSelection selection = new ComparisonFailureSelection(testElement);
-
+            ComparisonFailureSelection selection = null;
+            if (adapterType == ComparisonFailureSelection.class) {
+                selection = new ComparisonFailureSelection(testElement);
+            } else if (adapterType == ComparisonFailureSelectionAny.class) {
+                selection = new ComparisonFailureSelectionAny(testElement);
+            }
             // Only return the adapter if it actually contains a ComparisonFailure
-            if (selection.hasComparisonFailure()) {
+            if (selection != null && selection.hasComparisonFailure()) {
                 return adapterType.cast(selection);
             }
         }
@@ -22,7 +27,7 @@ public class ComparisonFailureSelectionAdapterFactory implements IAdapterFactory
 
     @Override
     public Class<?>[] getAdapterList() {
-        return new Class<?>[] { ComparisonFailureSelection.class };
+        return new Class<?>[] { ComparisonFailureSelection.class, ComparisonFailureSelectionAny.class };
     }
 
 }

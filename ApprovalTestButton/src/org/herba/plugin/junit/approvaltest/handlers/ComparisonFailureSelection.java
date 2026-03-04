@@ -37,7 +37,7 @@ public class ComparisonFailureSelection {
     /**
      * Extracts the ComparisonFailure from the test element's failure trace
      */
-    private ComparisonFailureDto extractComparisonFailure(ITestElement element) {
+    protected ComparisonFailureDto extractComparisonFailure(ITestElement element) {
         if (element == null) {
             return null;
         }
@@ -142,6 +142,10 @@ public class ComparisonFailureSelection {
 
     public ITestElement getTestElement() {
         return testElement;
+    }
+
+    void setTestElement(ITestElement testElement) {
+        this.testElement = testElement;
     }
 
     public ComparisonFailureDto getComparisonFailure() {

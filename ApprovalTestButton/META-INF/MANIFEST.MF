@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Approval Test Button
 Bundle-SymbolicName: org.herba.plugins.approvaltestbutton;singleton:=true
-Bundle-Version: 1.0.1
+Bundle-Version: 1.0.2
 Bundle-Vendor: csorbazoli
 Automatic-Module-Name: org.herba.plugins.approvaltestbutton
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
