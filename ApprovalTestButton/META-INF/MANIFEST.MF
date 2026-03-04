@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Approval Test Button
 Bundle-SymbolicName: org.herba.plugins.approvaltestbutton;singleton:=true
-Bundle-Version: 1.0.2
+Bundle-Version: 1.0.4
 Bundle-Vendor: csorbazoli
 Automatic-Module-Name: org.herba.plugins.approvaltestbutton
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -14,13 +14,13 @@ Require-Bundle: org.eclipse.jdt.junit;bundle-version="3.11.800",
  org.eclipse.jdt.junit4.runtime;bundle-version="1.1.1200",
  org.eclipse.jdt.junit5.runtime;bundle-version="1.0.900",
  org.junit;bundle-version="4.13.0",
- org.assertj;bundle-version="3.14.0",
- com.fasterxml.jackson.core.jackson-core;bundle-version="2.10.3",
- com.fasterxml.jackson.core.jackson-databind;bundle-version="2.10.3",
- com.fasterxml.jackson.core.jackson-annotations;bundle-version="2.10.3",
  org.eclipse.compare;bundle-version="3.7.1000"
 Bundle-Activator: org.herba.plugin.junit.approvaltest.ApprovalTestButtonPlugin
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/lombok-1.18.24.jar,
  .,
- lib/approvaltests-util-29.0.0.jar
+ lib/approvaltests-util-29.0.0.jar,
+ testlib/assertj-core-3.13.2.jar,
+ testlib/jackson-annotations-2.10.2.jar,
+ testlib/jackson-core-2.10.2.jar,
+ testlib/jackson-databind-2.10.2.jar

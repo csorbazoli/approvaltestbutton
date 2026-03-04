@@ -1,5 +1,6 @@
 {
   "message" : "java.lang.AssertionError: Failed Approval",
   "actual" : "NEW\n",
-  "expected" : ""
+  "expected" : "",
+  "filePath" : null
 }

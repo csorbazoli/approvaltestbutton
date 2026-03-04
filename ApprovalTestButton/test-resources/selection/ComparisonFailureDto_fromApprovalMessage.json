@@ -1,5 +1,6 @@
 {
   "message" : "org.junit.ComparisonFailure: Failed Approval",
   "actual" : "actual text",
-  "expected" : "expected text"
+  "expected" : "expected text",
+  "filePath" : null
 }
