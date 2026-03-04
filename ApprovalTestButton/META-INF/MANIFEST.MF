@@ -17,7 +17,8 @@ Require-Bundle: org.eclipse.jdt.junit;bundle-version="3.11.800",
  org.assertj;bundle-version="3.14.0",
  com.fasterxml.jackson.core.jackson-core;bundle-version="2.10.3",
  com.fasterxml.jackson.core.jackson-databind;bundle-version="2.10.3",
- com.fasterxml.jackson.core.jackson-annotations;bundle-version="2.10.3"
+ com.fasterxml.jackson.core.jackson-annotations;bundle-version="2.10.3",
+ org.eclipse.compare;bundle-version="3.7.1000"
 Bundle-Activator: org.herba.plugin.junit.approvaltest.ApprovalTestButtonPlugin
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/lombok-1.18.24.jar,

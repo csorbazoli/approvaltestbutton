@@ -39,6 +39,11 @@
             id="org.herba.plugin.junit.approveAllTestResults"
             name="Approve All Test Results">
       </command>
+      <command
+            description="Compare actual and expected result (received / approved)"
+            id="org.herba.plugin.junit.compareTestResult"
+            name="Compare Test Result">
+      </command>
    </extension>
 
    <!-- Define the command handler -->
@@ -69,12 +74,35 @@
             </with>
          </enabledWhen>
       </handler>
+      <handler
+            class="org.herba.plugin.junit.approvaltest.commands.CompareTestResultCommand"
+            commandId="org.herba.plugin.junit.compareTestResult">
+         <enabledWhen>
+            <with
+                  variable="selection">
+               <iterate
+                     ifEmpty="false"
+                     operator="or">
+                  <adapt
+                        type="org.herba.plugin.junit.approvaltest.handlers.ComparisonFailureSelection">
+                  </adapt>
+               </iterate>
+            </with>
+         </enabledWhen>
+      </handler>
    </extension>
 
    <!-- Add toolbar button to JUnit Results View -->
    <extension point="org.eclipse.ui.menus">
       <menuContribution
             locationURI="toolbar:org.eclipse.jdt.junit.ResultView">
+         <command
+               commandId="org.herba.plugin.junit.compareTestResult"
+               icon="res/icons/compare_text.png"
+               label="Compare test result"
+               style="push"
+               tooltip="Open compare view to review differences">
+         </command>
          <command
                commandId="org.herba.plugin.junit.approveTestResult"
                icon="res/icons/approved_text.png"
