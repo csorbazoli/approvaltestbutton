@@ -29,17 +29,17 @@ public class ApprovalTestResultComparisonInput extends CompareEditorInput {
 
     public ApprovalTestResultComparisonInput(String actual, File expectedPath, String expected) {
         super(initConfiguration(expectedPath));
-        this.actualContent = actual;
-        this.expectedFile = expectedPath;
-        this.expectedContent = expected;
+        actualContent = actual;
+        expectedFile = expectedPath;
+        expectedContent = expected;
     }
 
     private static CompareConfiguration initConfiguration(File path) {
         CompareConfiguration ret = new CompareConfiguration();
         ret.setLeftEditable(true);
-        ret.setLeftLabel("Expected (a.k.a. Approved): " + path.getAbsolutePath());
+        ret.setLeftLabel("Expected: " + path.getAbsolutePath());
         ret.setRightEditable(false);
-        ret.setRightLabel("Actual (a.k.a. Received)");
+        ret.setRightLabel("Actual");
         return ret;
     }
 
