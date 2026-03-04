@@ -54,11 +54,11 @@ public class AbstractApproveTestResultCommand extends AbstractHandler {
         return ret;
     }
 
-    protected boolean handleComparisonFailure(ComparisonFailureDto failureInfo) {
+    protected boolean overwriteFileWithActualResult(ComparisonFailureDto failureInfo) {
         boolean ret = true;
         logger.info("Overwriting approval test file with current output: " + failureInfo.getFilePath());
         try {
-            FileUtils.writeFile(failureInfo.getFilePath(), failureInfo.getExpected());
+            FileUtils.writeFile(failureInfo.getFilePath(), failureInfo.getActual());
         } catch (Throwable e) {
             ret = false;
             showError("Failed to overwrite test resource [" + failureInfo.getFilePath() + "]", e);

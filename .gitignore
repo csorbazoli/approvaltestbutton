@@ -25,3 +25,5 @@ replay_pid*
 sample-project/.settings
 sample-project/target
 ApprovalTestButton/.settings
+bin
+testbin

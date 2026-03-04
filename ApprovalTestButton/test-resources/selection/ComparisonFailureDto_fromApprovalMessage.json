@@ -1,5 +1,5 @@
 {
   "message" : "org.junit.ComparisonFailure: Failed Approval",
-  "actual" : "expected text",
-  "expected" : "actual text"
+  "actual" : "actual text",
+  "expected" : "expected text"
 }

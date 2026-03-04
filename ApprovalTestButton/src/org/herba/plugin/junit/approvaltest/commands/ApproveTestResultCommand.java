@@ -13,7 +13,7 @@ public class ApproveTestResultCommand extends AbstractApproveTestResultCommand {
         ComparisonFailureDto failureInfo = getComparisonFailureDetails(selectedElement);
         if (failureInfo != null && failureInfo.getFilePath() != null
                 && confirmOverwrite(failureInfo)) {
-            return handleComparisonFailure(failureInfo);
+            return overwriteFileWithActualResult(failureInfo);
         }
         return false;
     }

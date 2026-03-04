@@ -1,5 +1,5 @@
 {
   "message" : "org.junit.ComparisonFailure: error message for c:/myproject/src/test/resources/test.txt expected:<[expected] value> but was:<[actual] value>",
-  "actual" : "expected value",
-  "expected" : "actual value"
+  "actual" : "actual value",
+  "expected" : "expected value"
 }

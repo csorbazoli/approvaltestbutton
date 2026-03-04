@@ -44,7 +44,7 @@ public class ApproveAllTestResultsCommand extends AbstractApproveTestResultComma
         if (!fileList.isEmpty() && confirmOverwrite(fileList)) {
             ret = true;
             for (ComparisonFailureDto failureInfo : comparisonFailures) {
-                if (!handleComparisonFailure(failureInfo)) {
+                if (!overwriteFileWithActualResult(failureInfo)) {
                     ret = false;
                     break;
                 }

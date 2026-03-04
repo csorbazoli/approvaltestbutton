@@ -120,29 +120,6 @@ public class TestValueFactory {
         return ret.toString();
     }
 
-    // https://stackoverflow.com/questions/3152290/java-how-can-i-dynamically-create-an-array-of-a-specified-type-based-on-the-typ
-    private static <T> T[] toArray(Collection<T> c) {
-        if (c != null) {
-            Iterator<T> i = c.iterator();
-            if (i.hasNext()) {
-                T o = i.next();
-                if (o != null) {
-                    /* Create an array of the type of the first non-null element. */
-                    Class<?> type = o.getClass();
-                    T[] arr = (T[]) Array.newInstance(type, c.size());
-                    arr[0] = o;
-                    int idx = 1;
-                    while (i.hasNext()) {
-                        /* Make sure collection is really homogenous with cast() */
-                        arr[idx++] = (T) type.cast(i.next());
-                    }
-                    return arr;
-                }
-            }
-        }
-        return (T[]) new Object[0];
-    }
-
     private static <T> T[] toSingletonArray(T item) {
         if (item != null) {
             /* Create an array of the type of the first non-null element. */

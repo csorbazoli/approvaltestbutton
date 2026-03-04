@@ -74,8 +74,8 @@ public class ComparisonFailureSelection {
 
     private ComparisonFailureDto convertToDto(ITestElement element, String failureTrace) {
         return new ComparisonFailureDto(firstLineFrom(failureTrace),
-                element.getFailureTrace().getExpected(),
                 element.getFailureTrace().getActual(),
+                element.getFailureTrace().getExpected(),
                 getFilePathFromFailure(failureTrace));
     }
 
@@ -113,7 +113,7 @@ public class ComparisonFailureSelection {
         String expectedContent = readFileContent(expectedFilePath);
         String actualContent = readFileContent(actualFilePath);
         return new ComparisonFailureDto(firstLineFrom(element.getFailureTrace().getTrace()),
-                expectedContent, actualContent, new File(expectedFilePath));
+                actualContent, expectedContent, new File(expectedFilePath));
     }
 
     private String readFileContent(String filePath) {

@@ -52,7 +52,7 @@ public class ApproveAllTestResultaCommandTest {
         assertThat(approvalTestApproved).canRead();
         String approvedContent = TestUtils.readTestFile("approvaltest/SampleServiceTest.testCase.approved.txt");
         approvalTestApproved.delete();
-        assertThat(content).isEqualTo("1");
+        assertThat(content).isEqualTo("actual value");
         assertThat(approvedContent).isEqualTo("NEW");
         assertThat(listCapture).hasSize(2);
     }
@@ -72,7 +72,7 @@ public class ApproveAllTestResultaCommandTest {
         assertThat(approvalTestApproved).canRead();
         String approvedContent = TestUtils.readTestFile("approvaltest/SampleServiceTest.testCase.approved.txt");
         approvalTestApproved.delete();
-        assertThat(content).isEqualTo("1");
+        assertThat(content).isEqualTo("actual value");
         assertThat(approvedContent).isEqualTo("NEW");
         assertThat(listCapture).hasSize(2);
     }
@@ -125,7 +125,7 @@ public class ApproveAllTestResultaCommandTest {
         testContainer = new MockTestElementContainer(firstTestCase,
                 new MockTestCaseElement("something failed", "0", "1"),
                 new MockTestCaseElement("test result does not match test-resources/result/sample.txt",
-                        "0", "1"),
+                        "expected value", "actual value"),
                 approvalTestElement);
     }
 

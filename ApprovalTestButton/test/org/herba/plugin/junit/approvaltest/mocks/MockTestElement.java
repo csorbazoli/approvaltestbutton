@@ -15,17 +15,17 @@ public class MockTestElement implements ITestElement {
     private MockTestElementContainer parentContainer;
 
     public MockTestElement(Throwable error) {
-		StringWriter stringWriter = new StringWriter();
-		error.printStackTrace(new PrintWriter(stringWriter));
-		failureTrace = new FailureTrace(stringWriter.toString(), null, null);
-		this.comparisonFailure = false;
+        StringWriter stringWriter = new StringWriter();
+        error.printStackTrace(new PrintWriter(stringWriter));
+        failureTrace = new FailureTrace(stringWriter.toString(), null, null);
+        this.comparisonFailure = false;
     }
 
-	public MockTestElement(String message, String expected, String actual) {
+    public MockTestElement(String message, String expected, String actual) {
         StringWriter stringWriter = new StringWriter();
-		new ComparisonFailure(message, expected, actual).printStackTrace(new PrintWriter(stringWriter));
+        new ComparisonFailure(message, expected, actual).printStackTrace(new PrintWriter(stringWriter));
         failureTrace = new FailureTrace(stringWriter.toString(), expected, actual);
-		this.comparisonFailure = true;
+        this.comparisonFailure = true;
     }
 
     // this method is implemented in the internal class:
