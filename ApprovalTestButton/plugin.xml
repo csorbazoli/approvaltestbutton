@@ -98,21 +98,21 @@
             locationURI="toolbar:org.eclipse.jdt.junit.ResultView">
          <command
                commandId="org.herba.plugin.junit.compareTestResult"
-               icon="res/icons/compare_text.png"
+               icon="res/icons/compare_text_16.png"
                label="Compare test result"
                style="push"
                tooltip="Open compare view to review/approve results">
          </command>
          <command
                commandId="org.herba.plugin.junit.approveTestResult"
-               icon="res/icons/approved_text.png"
+               icon="res/icons/approved_text_16.png"
                label="Approve test results"
                tooltip="Overwrite expected result with actual"
                id="org.herba.plugin.junit.approveToolbarButton">
          </command>
          <command
                commandId="org.herba.plugin.junit.approveAllTestResults"
-               icon="res/icons/approved_all_text.png"
+               icon="res/icons/approved_all_text_16.png"
                label="Approve all test results"
                tooltip="Overwrite all expected results with actual"
                id="org.herba.plugin.junit.approveAllToolbarButton">
