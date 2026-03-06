@@ -23,7 +23,7 @@ public class CompareTestResultCommand extends AbstractApproveTestResultCommand {
     protected boolean openComparisonView(ComparisonFailureDto failureInfo) {
         try {
             CompareEditorInput input = new ApprovalTestResultComparisonInput(failureInfo.getActual(),
-                    failureInfo.getFilePath(), failureInfo.getExpected());
+                    failureInfo.getFilePath());
             CompareUI.openCompareEditor(input, true);
         } catch (Exception e) {
             logger.severe("Failed to open compare view: " + e.getMessage());

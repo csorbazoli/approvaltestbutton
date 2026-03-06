@@ -39,7 +39,7 @@ public class ApprovalTestResultComparisonInputTest {
 
     private ApprovalTestResultComparisonInput initUnderTest() {
         underTest = new ApprovalTestResultComparisonInput("actual value",
-                new File("test-resources/approvaltest/sample.approved.txt"), "expected value");
+                new File("test-resources/approvaltest/sample.approved.txt"));
         return underTest;
     }
 

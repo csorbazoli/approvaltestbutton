@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
+import java.util.logging.Logger;
 
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.CompareEditorInput;
@@ -20,18 +21,15 @@ import com.spun.util.io.FileUtils;
 
 public class ApprovalTestResultComparisonInput extends CompareEditorInput {
 
-    // private static final Logger logger =
-    // Logger.getLogger(ApprovalTestResultComparisonInput.class.getName());
+    private static final Logger logger = Logger.getLogger(ApprovalTestResultComparisonInput.class.getName());
 
     private final String actualContent;
-    private final String expectedContent;
     private final File expectedFile;
 
-    public ApprovalTestResultComparisonInput(String actual, File expectedPath, String expected) {
+    public ApprovalTestResultComparisonInput(String actual, File expectedPath) {
         super(initConfiguration(expectedPath));
         actualContent = actual;
         expectedFile = expectedPath;
-        expectedContent = expected;
     }
 
     private static CompareConfiguration initConfiguration(File path) {
@@ -47,7 +45,7 @@ public class ApprovalTestResultComparisonInput extends CompareEditorInput {
     protected Object prepareInput(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
         // Create the root diff node
         DiffNode root = new DiffNode(
-                new FileContentElement("Expected", expectedFile, expectedContent),
+                new FileContentElement("Expected", expectedFile),
                 new SimpleTextElement("Actual", actualContent));
         return root;
     }
@@ -88,12 +86,10 @@ public class ApprovalTestResultComparisonInput extends CompareEditorInput {
     private static class FileContentElement implements IEditableContent, ITypedElement, IStreamContentAccessor {
         private final String name;
         private final File file;
-        private String content;
 
-        FileContentElement(String name, File file, String content) {
+        FileContentElement(String name, File file) {
             this.name = name;
             this.file = file;
-            this.content = content != null ? content : "";
         }
 
         @Override
@@ -113,7 +109,10 @@ public class ApprovalTestResultComparisonInput extends CompareEditorInput {
 
         @Override
         public InputStream getContents() throws CoreException {
-            return new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8));
+            if (this.file.canRead())
+                return new ByteArrayInputStream(FileUtils.readFile(this.file).getBytes(StandardCharsets.UTF_8));
+            else
+                return new ByteArrayInputStream(new byte[0]);
         }
 
         @Override
@@ -128,7 +127,8 @@ public class ApprovalTestResultComparisonInput extends CompareEditorInput {
 
         @Override
         public ITypedElement replace(ITypedElement dest, ITypedElement src) {
-            throw new UnsupportedOperationException("NOT_IMPLEMENTED");
+            logger.warning("ComparisonInput.replace function is not supported: " + src + " -> " + dest);
+            return dest;
         }
     }
 }
