@@ -61,16 +61,17 @@ public class AbstractApproveTestResultCommand extends AbstractHandler {
             FileUtils.writeFile(failureInfo.getFilePath(), failureInfo.getActual());
         } catch (Throwable e) {
             ret = false;
-            showError("Failed to overwrite test resource [" + failureInfo.getFilePath() + "]", e);
+            showError(failureInfo, "Failed to overwrite test resource [" + failureInfo.getFilePath() + "]", e);
         }
         return ret;
     }
 
-    protected void showError(String message, Throwable exc) {
+    protected void showError(ComparisonFailureDto failureInfo, String message, Throwable exc) {
         String excDetails = exc == null ? "" : "\n" + exc.getMessage();
         logger.severe(message + excDetails);
         MessageDialog.openError(null, "Approval failure",
                 message + excDetails);
+        OpenTestResourceCommand.openEditor(failureInfo);
     }
 
 }

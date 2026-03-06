@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.herba.plugin.junit.approvaltest.mocks.MockTestCaseElement;
 import org.herba.plugin.junit.approvaltest.mocks.MockTestElementContainer;
+import org.herba.plugin.junit.approvaltest.models.ComparisonFailureDto;
 import org.junit.Test;
 
 import com.spun.util.io.FileUtils;
@@ -31,7 +32,7 @@ public class ApproveAllTestResultaCommandTest {
         }
 
         @Override
-        protected void showError(String message, Throwable exc) {
+        protected void showError(ComparisonFailureDto failureInfo, String message, Throwable exc) {
             errorMessageCapture = message;
             errorExceptionCapture = exc;
         }
