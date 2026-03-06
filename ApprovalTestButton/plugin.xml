@@ -45,9 +45,9 @@
             name="Compare Test Result">
       </command>
       <command
-            id="org.herba.plugin.junit.toolbar.showSubmenu"
-            name="Approval Test tools"
-            description="Approval Test tools Menu">
+            description="Open test resource in editor"
+            id="org.herba.plugin.junit.openTestResource"
+            name="Open Test Resource">
       </command>
    </extension>
 
@@ -95,6 +95,22 @@
             </with>
          </enabledWhen>
       </handler>
+      <handler
+            class="org.herba.plugin.junit.approvaltest.commands.OpenTestResourceCommand"
+            commandId="org.herba.plugin.junit.openTestResource">
+         <enabledWhen>
+            <with
+                  variable="selection">
+               <iterate
+                     ifEmpty="false"
+                     operator="or">
+                  <adapt
+                        type="org.herba.plugin.junit.approvaltest.handlers.ComparisonFailureSelection">
+                  </adapt>
+               </iterate>
+            </with>
+         </enabledWhen>
+      </handler>
    </extension>
 
    <!-- Add toolbar button to JUnit Results View -->
@@ -125,6 +141,15 @@
                mnemonic="C"
                style="push"
                tooltip="Open compare view to review/approve results">
+         </command>
+         <command
+               commandId="org.herba.plugin.junit.openTestResource"
+               icon="res/icons/open_16.png"
+               id="org.herba.plugin.junit.openToolbarButton"
+               label="Open test resource"
+               mnemonic="O"
+               style="push"
+               tooltip="Open file in editor">
          </command>
          <command
                commandId="org.herba.plugin.junit.approveTestResult"

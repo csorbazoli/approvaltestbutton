@@ -25,9 +25,10 @@ public class CompareTestResultCommand extends AbstractApproveTestResultCommand {
             CompareEditorInput input = new ApprovalTestResultComparisonInput(failureInfo.getActual(),
                     failureInfo.getFilePath());
             CompareUI.openCompareEditor(input, true);
+            return true;
         } catch (Exception e) {
             logger.severe("Failed to open compare view: " + e.getMessage());
+            return false;
         }
-        return true;
     }
 }
