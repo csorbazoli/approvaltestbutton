@@ -44,6 +44,11 @@
             id="org.herba.plugin.junit.compareTestResult"
             name="Compare Test Result">
       </command>
+      <command
+            id="org.herba.plugin.junit.toolbar.showSubmenu"
+            name="Approval Test tools"
+            description="Approval Test tools Menu">
+      </command>
    </extension>
 
    <!-- Define the command handler -->
@@ -96,26 +101,46 @@
    <extension point="org.eclipse.ui.menus">
       <menuContribution
             locationURI="toolbar:org.eclipse.jdt.junit.ResultView">
+         <separator
+               name="org.herba.plugin.junit.toolbarseparator"
+               visible="true">
+         </separator>
          <command
                commandId="org.herba.plugin.junit.compareTestResult"
                icon="res/icons/compare_text_16.png"
+               id="org.herba.plugin.junit.toolbar.submenu"
                label="Compare test result"
+               mnemonic="C"
+               style="pulldown"
+               tooltip="Open compare view to review/approve results">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="menu:org.herba.plugin.junit.toolbar.submenu">
+         <command
+               commandId="org.herba.plugin.junit.compareTestResult"
+               icon="res/icons/compare_text_16.png"
+               id="org.herba.plugin.junit.compareToolbarButton"
+               label="Compare test result"
+               mnemonic="C"
                style="push"
                tooltip="Open compare view to review/approve results">
          </command>
          <command
                commandId="org.herba.plugin.junit.approveTestResult"
                icon="res/icons/approved_text_16.png"
+               id="org.herba.plugin.junit.approveToolbarButton"
                label="Approve test results"
-               tooltip="Overwrite expected result with actual"
-               id="org.herba.plugin.junit.approveToolbarButton">
+               mnemonic="R"
+               tooltip="Overwrite expected result with actual">
          </command>
          <command
                commandId="org.herba.plugin.junit.approveAllTestResults"
                icon="res/icons/approved_all_text_16.png"
+               id="org.herba.plugin.junit.approveAllToolbarButton"
                label="Approve all test results"
-               tooltip="Overwrite all expected results with actual"
-               id="org.herba.plugin.junit.approveAllToolbarButton">
+               mnemonic="A"
+               tooltip="Overwrite all expected results with actual">
          </command>
       </menuContribution>
    </extension>
