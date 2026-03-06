@@ -10,6 +10,7 @@ import org.herba.plugin.junit.approvaltest.mocks.MockTestCaseElement;
 import org.herba.plugin.junit.approvaltest.mocks.MockTestElement;
 import org.herba.plugin.junit.approvaltest.mocks.MockTestElementContainer;
 import org.herba.plugin.junit.approvaltest.models.ComparisonFailureDto;
+import org.junit.After;
 import org.junit.Test;
 
 import testutils.TestUtils;
@@ -17,6 +18,11 @@ import testutils.TestUtils;
 public class ComparisonFailureSelectionTest {
 
     private ComparisonFailureSelection underTest;
+
+    @After
+    public void tearDown() {
+        MockLocation.resetBasePath();
+    }
 
     @Test
     public void testGetComparisonFailure_no_file_path_in_message() throws Exception {
@@ -44,6 +50,22 @@ public class ComparisonFailureSelectionTest {
         assertThat(actual.getFilePath().getPath().replace('\\', '/'))
                 .isEqualTo("c:/myproject/src/test/resources/test.txt");
         TestUtils.assertTestFileEquals("selection/ComparisonFailureDto.json", actual);
+        assertThat(underTest.getTestElement()).isEqualTo(testElement);
+    }
+
+    @Test
+    public void testGetComparisonFailure_with_relativePath_fallbackIfProjectDetectionFails() throws Exception {
+        // given
+        MockTestElement testElement = new MockTestCaseElement("error message for src/test/resources/test.txt",
+                "expected value", "actual value");
+        underTest = new ComparisonFailureSelection(testElement);
+        // when
+        ComparisonFailureDto actual = underTest.getComparisonFailure();
+        // then
+        assertThat(underTest.hasComparisonFailure()).isTrue();
+        assertThat(actual.getFilePath()).isNotNull();
+        assertThat(actual.getFilePath().getPath().replace('\\', '/'))
+                .isEqualTo("src/test/resources/test.txt");
         assertThat(underTest.getTestElement()).isEqualTo(testElement);
     }
 

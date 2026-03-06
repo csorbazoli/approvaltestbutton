@@ -12,6 +12,10 @@ public class MockLocation implements IPath {
         MockLocation.basePath = basePath;
     }
 
+    public static void resetBasePath() {
+        basePath = "";
+    }
+
     @Override
     public IPath addFileExtension(String extension) {
         throw new UnsupportedOperationException("NOT_IMPLEMENTED");
@@ -176,4 +180,5 @@ public class MockLocation implements IPath {
     public Object clone() {
         throw new UnsupportedOperationException("NOT_IMPLEMENTED");
     }
+
 }

@@ -105,9 +105,14 @@ public class ComparisonFailureSelection {
         File path = new File(normalized);
         if (path.exists() || normalizePathSep(path.getAbsolutePath()).equals(found))
             return path;
-        IJavaProject launchedProject = element.getParentContainer().getTestRunSession().getLaunchedProject();
-        File projectBaseFolder = launchedProject.getResource().getLocation().toFile().getAbsoluteFile();
-        return supplementTestResourcePrefix(normalized, projectBaseFolder);
+        try {
+            IJavaProject launchedProject = element.getParentContainer().getTestRunSession().getLaunchedProject();
+            File projectBaseFolder = launchedProject.getResource().getLocation().toFile().getAbsoluteFile();
+            return supplementTestResourcePrefix(normalized, projectBaseFolder);
+        } catch (Exception e) {
+            logger.warning("Could not determine project base folder: " + e.getMessage());
+            return path;
+        }
     }
 
     private File supplementTestResourcePrefix(String relativePath, File projectBaseFolder) {
