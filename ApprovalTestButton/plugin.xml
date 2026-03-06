@@ -40,15 +40,21 @@
             name="Approve All Test Results">
       </command>
       <command
+            categoryId="org.eclipse.compare.ui.category.compare"
             description="Compare actual and expected result (received / approved)"
             id="org.herba.plugin.junit.compareTestResult"
             name="Compare Test Result">
       </command>
       <command
+            categoryId="org.eclipse.ui.category.textEditor"
             description="Open test resource in editor"
             id="org.herba.plugin.junit.openTestResource"
             name="Open Test Resource">
       </command>
+      <category
+            id="ApprovalTestButton.category1"
+            name="name">
+      </category>
    </extension>
 
    <!-- Define the command handler -->
@@ -181,6 +187,21 @@
                type="org.herba.plugin.junit.approvaltest.handlers.ComparisonFailureSelectionAny">
          </adapter>
       </factory>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="org.herba.plugin.junit.compareTestResult"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+D">
+      </key>
+      <key
+            commandId="org.herba.plugin.junit.openTestResource"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+V">
+      </key>
    </extension>
 
 </plugin>
