@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.junit.model.ITestElement;
 import org.herba.plugin.junit.approvaltest.models.ComparisonFailureDto;
 
@@ -76,10 +77,10 @@ public class ComparisonFailureSelection {
         return new ComparisonFailureDto(firstLineFrom(failureTrace),
                 element.getFailureTrace().getActual(),
                 element.getFailureTrace().getExpected(),
-                getFilePathFromFailure(failureTrace));
+                getFilePathFromFailure(element, failureTrace));
     }
 
-    private File getFilePathFromFailure(String failureTrace) {
+    private File getFilePathFromFailure(ITestElement element, String failureTrace) {
         // TODO get patterns or prefixes for assertion types
         // e.g. Approved:PATTERN
         // in file PATTERN
@@ -90,21 +91,52 @@ public class ComparisonFailureSelection {
         if (m.find()) {
             // might need a default base folder for relative paths
             String found = m.group();
+            File fullPath = supplementRelativePath(found, element);
             logger.info("File path '" + found + "' found in error trace: " + extracted);
-            return new File(found);
+            return fullPath;
         } else {
             logger.fine("File path not found in error trace: " + extracted);
         }
         return null;
     }
 
+    private File supplementRelativePath(String found, ITestElement element) {
+        String normalized = normalizePathSep(found);
+        File path = new File(normalized);
+        if (path.exists() || normalizePathSep(path.getAbsolutePath()).equals(found))
+            return path;
+        IJavaProject launchedProject = element.getParentContainer().getTestRunSession().getLaunchedProject();
+        File projectBaseFolder = launchedProject.getResource().getLocation().toFile().getAbsoluteFile();
+        return supplementTestResourcePrefix(normalized, projectBaseFolder);
+    }
+
+    private File supplementTestResourcePrefix(String relativePath, File projectBaseFolder) {
+        String prefix = "";
+        if (!relativePath.startsWith("src") && !relativePath.startsWith("test")) {
+            if (new File(projectBaseFolder, "src/test/resources").exists()) {
+                prefix = "src/test/resources/";
+            } else if (new File(projectBaseFolder, "test-resources").exists()) {
+                prefix = "test-resources/";
+            } else if (new File(projectBaseFolder, "test").exists()) {
+                prefix = "test/";
+            } else { // default, may not exist just yet
+                prefix = "src/test/resources/";
+            }
+
+        }
+        return new File(projectBaseFolder, prefix + relativePath);
+    }
+
     private String extractRelevantPartOfTrace(String failureTrace) {
-        String ret = failureTrace.substring(failureTrace.indexOf(':') + 1)
-                .replace('\\', '/');
+        String ret = normalizePathSep(failureTrace.substring(failureTrace.indexOf(':') + 1));
         if (ret.contains("expected:") && ret.contains("but was:")) {
             ret = ret.substring(0, ret.indexOf("expected:"));
         }
         return ret;
+    }
+
+    private String normalizePathSep(String path) {
+        return path.replace('\\', '/');
     }
 
     private ComparisonFailureDto convertFromApprovalTestError(ITestElement element, String failureTrace) {

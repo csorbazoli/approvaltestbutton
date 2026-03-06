@@ -1,6 +1,7 @@
 package com.herba;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 import org.approvaltests.Approvals;
 import org.approvaltests.core.Options;
@@ -25,12 +26,29 @@ public class SampleServiceTest {
 	}
 
 	@Test
-	public void testDoSomething_assertTestFileEquals() throws Exception {
+	public void testDoSomething_assertEquals_relativePathUnderTestResources() throws Exception {
 		// given
 		// when
 		String actual = underTest.doSomething();
 		// then
-		TestUtils.assertTestFileEquals("samples/SampleService_doSomething.txt", actual);
+//		assertThat(TestUtils.readTestFile("samples/SampleService_doSomething.txt"))
+//				.withFailMessage("Actual reult does not match content of samples/SampleService_doSomething.txt")
+//				.isEqualTo(actual);
+		assertEquals("Actual result does not match content of samples/SampleService_doSomething.txt",
+				TestUtils.readTestFile("samples/SampleService_doSomething.txt"), actual);
+	}
+
+	@Test
+	public void testDoSomething_assertEquals_relativePath() throws Exception {
+		// given
+		// when
+		String actual = underTest.doSomething();
+		// then
+		assertEquals("Actual result does not match content of src/test/resources/samples/SampleService_doSomething.txt",
+				TestUtils.readTestFile("samples/SampleService_doSomething.txt"), actual);
+//		assertThat(TestUtils.readTestFile("samples/SampleService_doSomething.txt")).withFailMessage(
+//				"Actual reult does not match content of src/test/resources/samples/SampleService_doSomething.txt")
+//				.isEqualTo(actual);
 	}
 
 	@Test

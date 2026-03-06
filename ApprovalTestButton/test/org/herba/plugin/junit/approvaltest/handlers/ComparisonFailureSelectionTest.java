@@ -5,7 +5,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.File;
 
 import org.eclipse.jdt.junit.model.ITestElement;
+import org.herba.plugin.junit.approvaltest.mocks.MockLocation;
 import org.herba.plugin.junit.approvaltest.mocks.MockTestCaseElement;
+import org.herba.plugin.junit.approvaltest.mocks.MockTestElement;
+import org.herba.plugin.junit.approvaltest.mocks.MockTestElementContainer;
 import org.herba.plugin.junit.approvaltest.models.ComparisonFailureDto;
 import org.junit.Test;
 
@@ -41,6 +44,45 @@ public class ComparisonFailureSelectionTest {
         assertThat(actual.getFilePath().getPath().replace('\\', '/'))
                 .isEqualTo("c:/myproject/src/test/resources/test.txt");
         TestUtils.assertTestFileEquals("selection/ComparisonFailureDto.json", actual);
+        assertThat(underTest.getTestElement()).isEqualTo(testElement);
+    }
+
+    @Test
+    public void testGetComparisonFailure_with_relativePath_shouldResolveFromTestElement() throws Exception {
+        // given
+        MockTestElement testElement = new MockTestCaseElement("error message for src/test/resources/test.txt",
+                "expected value", "actual value");
+        new MockTestElementContainer(testElement);
+        MockLocation.setBasePath("c:/myproject");
+        underTest = new ComparisonFailureSelection(testElement);
+        // when
+        ComparisonFailureDto actual = underTest.getComparisonFailure();
+        // then
+        assertThat(underTest.hasComparisonFailure()).isTrue();
+        assertThat(actual.getFilePath()).isNotNull();
+        assertThat(actual.getFilePath().getPath().replace('\\', '/'))
+                .isEqualTo("c:/myproject/src/test/resources/test.txt");
+        actual.setFilePath(null);
+        TestUtils.assertTestFileEquals("selection/ComparisonFailureDto_relative.json", actual);
+        assertThat(underTest.getTestElement()).isEqualTo(testElement);
+    }
+
+    @Test
+    public void testGetComparisonFailure_with_relativePathUnderTestResources_shouldResolveFromTestElement()
+            throws Exception {
+        // given
+        MockTestElement testElement = new MockTestCaseElement("error message for com/herba/someService/test.txt",
+                "expected value", "actual value");
+        new MockTestElementContainer(testElement);
+        MockLocation.setBasePath("c:/myproject");
+        underTest = new ComparisonFailureSelection(testElement);
+        // when
+        ComparisonFailureDto actual = underTest.getComparisonFailure();
+        // then
+        assertThat(underTest.hasComparisonFailure()).isTrue();
+        assertThat(actual.getFilePath()).isNotNull();
+        assertThat(actual.getFilePath().getPath().replace('\\', '/'))
+                .isEqualTo("c:/myproject/src/test/resources/com/herba/someService/test.txt");
         assertThat(underTest.getTestElement()).isEqualTo(testElement);
     }
 
