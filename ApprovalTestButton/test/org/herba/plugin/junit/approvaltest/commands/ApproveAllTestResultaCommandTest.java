@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.File;
 import java.util.List;
 
+import org.eclipse.jdt.junit.model.ITestElement.FailureTrace;
 import org.herba.plugin.junit.approvaltest.mocks.MockTestCaseElement;
 import org.herba.plugin.junit.approvaltest.mocks.MockTestElementContainer;
 import org.herba.plugin.junit.approvaltest.models.ComparisonFailureDto;
@@ -55,6 +56,32 @@ public class ApproveAllTestResultaCommandTest {
         approvalTestApproved.delete();
         assertThat(content).isEqualTo("actual value");
         assertThat(approvedContent).isEqualTo("NEW");
+        assertThat(listCapture).hasSize(2);
+    }
+
+    @Test
+    public void testHandleSelection_shouldHandleTestContainersFailureAsWell() throws Exception {
+        // given
+        firstTestCase = new MockTestCaseElement(new RuntimeException("something failed"));
+        testContainer = new MockTestElementContainer(firstTestCase,
+                new MockTestCaseElement("something failed", "0", "1"),
+                new MockTestCaseElement("test result does not match test-resources/result/sample.txt",
+                        "expected value", "actual value"));
+        testContainer.setComparisonFailure(true);
+        testContainer.setFailureTrace(
+                new FailureTrace("error message for test-resources/result/tcsample.txt", "tc expected", "tc actual"));
+        // when
+        boolean actual = underTest.handleSelection(firstTestCase);
+        // then
+        assertThat(actual).isTrue();
+        File testFile = new File("test-resources/result/sample.txt");
+        assertThat(testFile).canRead();
+        testFile.delete();
+        File tcFile = new File("test-resources/result/tcsample.txt");
+        assertThat(tcFile).canRead();
+        String content = TestUtils.readTestFile("result/tcsample.txt");
+        tcFile.delete();
+        assertThat(content).isEqualTo("tc actual");
         assertThat(listCapture).hasSize(2);
     }
 

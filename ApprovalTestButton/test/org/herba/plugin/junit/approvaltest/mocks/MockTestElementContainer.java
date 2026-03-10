@@ -7,12 +7,13 @@ import org.eclipse.jdt.junit.model.ITestElement;
 import org.eclipse.jdt.junit.model.ITestElementContainer;
 import org.eclipse.jdt.junit.model.ITestRunSession;
 
-public class MockTestElementContainer implements ITestElementContainer {
+public class MockTestElementContainer extends MockTestElement implements ITestElementContainer {
 
     private final List<ITestElement> children = new LinkedList<ITestElement>();
     private ITestRunSession testRunSession;
 
     public MockTestElementContainer(MockTestElement... elements) {
+        super();
         for (MockTestElement element : elements) {
             addChild(element);
             element.setParentContainer(this);
@@ -22,31 +23,6 @@ public class MockTestElementContainer implements ITestElementContainer {
     public MockTestElementContainer addChild(ITestElement child) {
         this.children.add(child);
         return this;
-    }
-
-    @Override
-    public double getElapsedTimeInSeconds() {
-        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
-    }
-
-    @Override
-    public FailureTrace getFailureTrace() {
-        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
-    }
-
-    @Override
-    public ITestElementContainer getParentContainer() {
-        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
-    }
-
-    @Override
-    public ProgressState getProgressState() {
-        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
-    }
-
-    @Override
-    public Result getTestResult(boolean arg0) {
-        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
     }
 
     @Override

@@ -34,12 +34,9 @@ public class ApproveAllTestResultsCommand extends AbstractApproveTestResultComma
         boolean ret = false;
         List<ComparisonFailureDto> comparisonFailures = new LinkedList<ComparisonFailureDto>();
         List<File> fileList = new LinkedList<File>();
+        preprocessComparisonFailure(testContainer, comparisonFailures, fileList);
         for (ITestElement element : testContainer.getChildren()) {
-            ComparisonFailureDto comparisonFailureDetails = getComparisonFailureDetails(element);
-            if (comparisonFailureDetails != null && comparisonFailureDetails.getFilePath() != null) {
-                fileList.add(comparisonFailureDetails.getFilePath());
-                comparisonFailures.add(comparisonFailureDetails);
-            }
+            preprocessComparisonFailure(element, comparisonFailures, fileList);
         }
         if (!fileList.isEmpty() && confirmOverwrite(fileList)) {
             ret = true;
@@ -53,6 +50,15 @@ public class ApproveAllTestResultsCommand extends AbstractApproveTestResultComma
         return ret;
     }
 
+    private void preprocessComparisonFailure(ITestElement element, List<ComparisonFailureDto> comparisonFailures,
+            List<File> fileList) {
+        ComparisonFailureDto comparisonFailureDetails = getComparisonFailureDetails(element);
+        if (comparisonFailureDetails != null && comparisonFailureDetails.getFilePath() != null) {
+            fileList.add(comparisonFailureDetails.getFilePath());
+            comparisonFailures.add(comparisonFailureDetails);
+        }
+    }
+
     protected boolean confirmOverwrite(List<File> fileList) {
         // TODO add remember choice option
         return MessageDialog.openQuestion(null, "Confirm approval",
@@ -60,7 +66,7 @@ public class ApproveAllTestResultsCommand extends AbstractApproveTestResultComma
                         + "%s\n"
                         + "with expected value",
                         fileList.stream()
-                        .map(File::getAbsolutePath)
+                                .map(File::getAbsolutePath)
                                 .collect(Collectors.joining("\n"))));
     }
 }

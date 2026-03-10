@@ -10,9 +10,13 @@ import org.junit.ComparisonFailure;
 
 public class MockTestElement implements ITestElement {
 
-    private final FailureTrace failureTrace;
+    private FailureTrace failureTrace;
     private boolean comparisonFailure;
     private MockTestElementContainer parentContainer;
+
+    public MockTestElement() {
+        this.comparisonFailure = false;
+    }
 
     public MockTestElement(Throwable error) {
         StringWriter stringWriter = new StringWriter();
@@ -34,6 +38,10 @@ public class MockTestElement implements ITestElement {
         return comparisonFailure;
     }
 
+    public void setComparisonFailure(boolean comparison) {
+        comparisonFailure = comparison;
+    }
+
     public void setParentContainer(MockTestElementContainer parentContainer) {
         this.parentContainer = parentContainer;
     }
@@ -46,6 +54,10 @@ public class MockTestElement implements ITestElement {
     @Override
     public FailureTrace getFailureTrace() {
         return failureTrace;
+    }
+
+    public void setFailureTrace(FailureTrace failure) {
+        this.failureTrace = failure;
     }
 
     @Override
