@@ -110,7 +110,7 @@ public class ApprovalTestResultComparisonInput extends CompareEditorInput {
         @Override
         public InputStream getContents() throws CoreException {
             if (this.file.canRead())
-                return new ByteArrayInputStream(FileUtils.readFile(this.file).getBytes(StandardCharsets.UTF_8));
+                return new ByteArrayInputStream(FileUtils.readFile(this.file, false).getBytes(StandardCharsets.UTF_8));
             else
                 return new ByteArrayInputStream(new byte[0]);
         }

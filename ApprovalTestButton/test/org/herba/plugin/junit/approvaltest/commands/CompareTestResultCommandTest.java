@@ -67,7 +67,7 @@ public class CompareTestResultCommandTest {
         boolean actual = underTest.handleSelection(selectedElement);
         // then
         assertThat(actual).isTrue();
-        assertThat(captureFailureInfo.getActual()).isEqualTo("NEW\n");
+        assertThat(captureFailureInfo.getActual()).isEqualTo("NEW");
         assertThat(captureFailureInfo.getFilePath().getAbsolutePath())
                 .isEqualTo(approvalTestApproved.getAbsolutePath());
     }

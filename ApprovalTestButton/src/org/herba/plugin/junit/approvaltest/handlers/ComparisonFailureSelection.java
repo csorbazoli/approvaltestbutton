@@ -156,7 +156,7 @@ public class ComparisonFailureSelection {
     private String readFileContent(String filePath) {
         File file = new File(filePath);
         if (file.canRead()) {
-            return FileUtils.readFile(file);
+            return FileUtils.readFile(file, false);
         }
         return "";
     }
