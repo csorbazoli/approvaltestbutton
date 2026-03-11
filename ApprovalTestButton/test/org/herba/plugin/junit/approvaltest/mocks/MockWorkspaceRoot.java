@@ -3,16 +3,21 @@ package org.herba.plugin.junit.approvaltest.mocks;
 import java.net.URI;
 import java.util.Map;
 
+import org.eclipse.core.resources.FileInfoMatcherDescription;
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceFilterDescription;
 import org.eclipse.core.resources.IResourceProxy;
 import org.eclipse.core.resources.IResourceProxyVisitor;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -20,30 +25,91 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
-public class MockResource implements IResource {
-
-    private IPath location;
+public class MockWorkspaceRoot implements IWorkspaceRoot {
 
     @Override
-    public IPath getLocation() {
-        if (location == null) {
-            location = new MockLocation();
-        }
-        return location;
-    }
-
-    @Override
-    public <T> T getAdapter(Class<T> adapter) {
+    public boolean exists(IPath path) {
         throw new UnsupportedOperationException("NOT_IMPLEMENTED");
     }
 
     @Override
-    public boolean contains(ISchedulingRule rule) {
+    public IResource findMember(String path) {
         throw new UnsupportedOperationException("NOT_IMPLEMENTED");
     }
 
     @Override
-    public boolean isConflicting(ISchedulingRule rule) {
+    public IResource findMember(String path, boolean includePhantoms) {
+        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
+    }
+
+    @Override
+    public IResource findMember(IPath path) {
+        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
+    }
+
+    @Override
+    public IResource findMember(IPath path, boolean includePhantoms) {
+        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
+    }
+
+    @Override
+    public String getDefaultCharset() throws CoreException {
+        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
+    }
+
+    @Override
+    public String getDefaultCharset(boolean checkImplicit) throws CoreException {
+        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
+    }
+
+    @Override
+    public IFile getFile(IPath path) {
+        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
+    }
+
+    @Override
+    public IFolder getFolder(IPath path) {
+        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
+    }
+
+    @Override
+    public IResource[] members() throws CoreException {
+        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
+    }
+
+    @Override
+    public IResource[] members(boolean includePhantoms) throws CoreException {
+        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
+    }
+
+    @Override
+    public IResource[] members(int memberFlags) throws CoreException {
+        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
+    }
+
+    @Override
+    public IFile[] findDeletedMembersWithHistory(int depth, IProgressMonitor monitor) throws CoreException {
+        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
+    }
+
+    @Override
+    public void setDefaultCharset(String charset) throws CoreException {
+        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
+    }
+
+    @Override
+    public void setDefaultCharset(String charset, IProgressMonitor monitor) throws CoreException {
+        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
+    }
+
+    @Override
+    public IResourceFilterDescription createFilter(int type, FileInfoMatcherDescription matcherDescription,
+            int updateFlags, IProgressMonitor monitor) throws CoreException {
+        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
+    }
+
+    @Override
+    public IResourceFilterDescription[] getFilters() throws CoreException {
         throw new UnsupportedOperationException("NOT_IMPLEMENTED");
     }
 
@@ -154,6 +220,11 @@ public class MockResource implements IResource {
 
     @Override
     public long getLocalTimeStamp() {
+        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
+    }
+
+    @Override
+    public IPath getLocation() {
         throw new UnsupportedOperationException("NOT_IMPLEMENTED");
     }
 
@@ -395,6 +466,81 @@ public class MockResource implements IResource {
 
     @Override
     public void touch(IProgressMonitor monitor) throws CoreException {
+        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
+    }
+
+    @Override
+    public <T> T getAdapter(Class<T> adapter) {
+        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
+    }
+
+    @Override
+    public boolean contains(ISchedulingRule rule) {
+        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
+    }
+
+    @Override
+    public boolean isConflicting(ISchedulingRule rule) {
+        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
+    }
+
+    @Override
+    public void delete(boolean deleteContent, boolean force, IProgressMonitor monitor) throws CoreException {
+        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
+    }
+
+    @Override
+    public IContainer[] findContainersForLocation(IPath location) {
+        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
+    }
+
+    @Override
+    public IContainer[] findContainersForLocationURI(URI location) {
+        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
+    }
+
+    @Override
+    public IContainer[] findContainersForLocationURI(URI location, int memberFlags) {
+        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
+    }
+
+    @Override
+    public IFile[] findFilesForLocation(IPath location) {
+        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
+    }
+
+    @Override
+    public IFile[] findFilesForLocationURI(URI location) {
+        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
+    }
+
+    @Override
+    public IFile[] findFilesForLocationURI(URI location, int memberFlags) {
+        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
+    }
+
+    @Override
+    public IContainer getContainerForLocation(IPath location) {
+        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
+    }
+
+    @Override
+    public IFile getFileForLocation(IPath location) {
+        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
+    }
+
+    @Override
+    public IProject getProject(String name) {
+        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
+    }
+
+    @Override
+    public IProject[] getProjects() {
+        throw new UnsupportedOperationException("NOT_IMPLEMENTED");
+    }
+
+    @Override
+    public IProject[] getProjects(int memberFlags) {
         throw new UnsupportedOperationException("NOT_IMPLEMENTED");
     }
 

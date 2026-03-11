@@ -6,6 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.junit.model.ITestCaseElement;
 import org.eclipse.jdt.junit.model.ITestElement;
 import org.herba.plugin.junit.approvaltest.models.ComparisonFailureDto;
 import org.herba.plugin.junit.approvaltest.models.FailureWithFilePathDto;
@@ -61,7 +62,8 @@ public class FailureWithFilePathSelection {
     }
 
     private boolean isApprovalTestError(ITestElement element) {
-        return element.getFailureTrace().getTrace().contains("Approved:");
+        String trace = element.getFailureTrace().getTrace();
+        return trace.contains("Approved:") || trace.contains("Approvals.verify(");
     }
 
     private FailureWithFilePathDto convertToDto(ITestElement element, String failureTrace) {
@@ -95,13 +97,18 @@ public class FailureWithFilePathSelection {
         if (path.exists() || normalizePathSep(path.getAbsolutePath()).equals(found))
             return path;
         try {
-            IJavaProject launchedProject = element.getParentContainer().getTestRunSession().getLaunchedProject();
-            File projectBaseFolder = launchedProject.getResource().getLocation().toFile().getAbsoluteFile();
+            File projectBaseFolder = determineProjectBaseFolder(element);
             return supplementTestResourcePrefix(normalized, projectBaseFolder);
         } catch (Exception e) {
             logger.warning("Could not determine project base folder: " + e.getMessage());
             return path;
         }
+    }
+
+    private File determineProjectBaseFolder(ITestElement element) {
+        IJavaProject launchedProject = element.getParentContainer().getTestRunSession().getLaunchedProject();
+        File projectBaseFolder = launchedProject.getResource().getLocation().toFile().getAbsoluteFile();
+        return projectBaseFolder;
     }
 
     private File supplementTestResourcePrefix(String relativePath, File projectBaseFolder) {
@@ -134,23 +141,52 @@ public class FailureWithFilePathSelection {
     }
 
     private FailureWithFilePathDto convertFromApprovalTestError(ITestElement element, String failureTrace) {
-        String expectedFilePath = extractPath(failureTrace, "Approved:");
-        String actualFilePath = extractPath(failureTrace, "Received:");
+        File actualFilePath = extraceReceivedPath(element, failureTrace);
+        File expectedFilePath = extractApprovedPath(element, failureTrace, actualFilePath);
         String expectedContent = readFileContent(expectedFilePath);
         String actualContent = readFileContent(actualFilePath);
         return new ComparisonFailureDto(firstLineFrom(element.getFailureTrace().getTrace()),
-                actualContent, expectedContent, new File(expectedFilePath));
+                actualContent, expectedContent, expectedFilePath);
     }
 
-    private String readFileContent(String filePath) {
-        File file = new File(filePath);
+    private File extraceReceivedPath(ITestElement element, String failureTrace) {
+        File ret = extractPath(failureTrace, "Received:");
+        if (ret == null && element instanceof ITestCaseElement) {
+            ret = determineFilePath((ITestCaseElement) element, "received");
+        }
+        return ret;
+    }
+
+    private File extractApprovedPath(ITestElement element, String failureTrace, File receivedFilePath) {
+        File ret = extractPath(failureTrace, "Approved:");
+        if (ret == null && element instanceof ITestCaseElement) {
+            ret = determineFilePath((ITestCaseElement) element, "approved");
+        }
+        // if approved not exist yet, then it has to be next to the received one
+        if (ret == null && receivedFilePath != null) {
+            ret = new File(receivedFilePath.getAbsolutePath().replaceFirst("received\\.(\\w+)$", "approved.$1"));
+        }
+        return ret;
+    }
+
+    private File determineFilePath(ITestCaseElement element, String type) {
+        // what if it's a json file or other extension?
+        // try finding the file in the folder structure just by the name without
+        // extension?
+        return org.herba.plugin.junit.approvaltest.utils.ApprovalTestFileUtils.findFileByNameInWorkspace(
+                determineProjectBaseFolder(element),
+                String.join(".", element.getTestClassName().substring(element.getTestClassName().lastIndexOf('.') + 1),
+                        element.getTestMethodName(), type));
+    }
+
+    private String readFileContent(File file) {
         if (file.canRead()) {
             return FileUtils.readFile(file, false);
         }
         return "";
     }
 
-    private String extractPath(String failureTrace, String prefix) {
+    private File extractPath(String failureTrace, String prefix) {
         String ret = null;
         int pos = failureTrace.indexOf(prefix);
         if (pos != -1) {
@@ -159,7 +195,7 @@ public class FailureWithFilePathSelection {
             int end = expected != -1 && expected < newLine ? expected : newLine;
             ret = failureTrace.substring(pos + prefix.length(), end).trim();
         }
-        return ret;
+        return ret == null ? null : new File(ret);
     }
 
     private String firstLineFrom(String content) {

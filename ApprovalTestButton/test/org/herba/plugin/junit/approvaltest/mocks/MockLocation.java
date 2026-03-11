@@ -17,6 +17,11 @@ public class MockLocation implements IPath {
     }
 
     @Override
+    public File toFile() {
+        return new File(basePath);
+    }
+
+    @Override
     public IPath addFileExtension(String extension) {
         throw new UnsupportedOperationException("NOT_IMPLEMENTED");
     }
@@ -154,11 +159,6 @@ public class MockLocation implements IPath {
     @Override
     public IPath setDevice(String device) {
         throw new UnsupportedOperationException("NOT_IMPLEMENTED");
-    }
-
-    @Override
-    public File toFile() {
-        return new File(basePath);
     }
 
     @Override

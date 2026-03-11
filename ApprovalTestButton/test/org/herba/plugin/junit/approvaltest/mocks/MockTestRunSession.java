@@ -10,6 +10,14 @@ public class MockTestRunSession implements ITestRunSession {
     private IJavaProject javaProject;
 
     @Override
+    public IJavaProject getLaunchedProject() {
+        if (javaProject == null) {
+            javaProject = new MockJavaProject();
+        }
+        return javaProject;
+    }
+
+    @Override
     public ITestElement[] getChildren() {
         throw new UnsupportedOperationException("NOT_IMPLEMENTED");
     }
@@ -42,14 +50,6 @@ public class MockTestRunSession implements ITestRunSession {
     @Override
     public ITestRunSession getTestRunSession() {
         throw new UnsupportedOperationException("NOT_IMPLEMENTED");
-    }
-
-    @Override
-    public IJavaProject getLaunchedProject() {
-        if (javaProject == null) {
-            javaProject = new MockJavaProject();
-        }
-        return javaProject;
     }
 
     @Override

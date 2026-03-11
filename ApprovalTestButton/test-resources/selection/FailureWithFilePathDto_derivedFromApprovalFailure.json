@@ -1,0 +1,6 @@
+{
+  "message" : "org.junit.ComparisonFailure: org.junit.ComparisonFailure: expected:<[]> but was:<[OK",
+  "filePath" : null,
+  "actual" : "received value",
+  "expected" : "approved value"
+}

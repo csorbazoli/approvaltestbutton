@@ -10,7 +10,9 @@ import org.herba.plugin.junit.approvaltest.mocks.MockTestCaseElement;
 import org.herba.plugin.junit.approvaltest.mocks.MockTestElement;
 import org.herba.plugin.junit.approvaltest.mocks.MockTestElementContainer;
 import org.herba.plugin.junit.approvaltest.models.FailureWithFilePathDto;
+import org.herba.plugin.junit.approvaltest.utils.MockFileUtils;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import testutils.TestUtils;
@@ -18,6 +20,11 @@ import testutils.TestUtils;
 public class FailureWithFilePathSelectionTest {
 
     private FailureWithFilePathSelection underTest;
+
+    @Before
+    public void setupTest() throws Exception {
+        MockFileUtils.initMock();
+    }
 
     @After
     public void tearDown() {
@@ -34,6 +41,54 @@ public class FailureWithFilePathSelectionTest {
         // then
         assertThat(actual).isNull();
         assertThat(underTest.hasFailureInfo()).isFalse();
+    }
+
+    @Test
+    public void testGetComparisonFailure_no_file_path_in_message_but_approvalVerifyWasUsed() throws Exception {
+        // given
+        File approvalTestApproved = new File("test-resources/approvaltest",
+                "SomeTest.testSomething_shouldDo.approved.txt");
+        MockTestCaseElement testElement = new MockTestCaseElement(
+                TestUtils.readTestFile("selection/failureTraceWithApprovalsVerify.txt"), "expected value",
+                "actual value");
+        new MockTestElementContainer(testElement);
+        underTest = new FailureWithFilePathSelection(testElement);
+        // when
+        FailureWithFilePathDto actual = underTest.getFailureInfo();
+        // then
+        assertThat(actual).isNotNull();
+        assertThat(underTest.hasFailureInfo()).isTrue();
+        assertThat(actual.getFilePath()).isNotNull();
+        assertThat(actual.getFilePath().getAbsolutePath())
+                .isEqualTo(approvalTestApproved.getAbsolutePath());
+        actual.setFilePath(null);
+        TestUtils.assertTestFileEquals("selection/FailureWithFilePathDto_derivedFromApprovalFailure.json", actual);
+        assertThat(underTest.getTestElement()).isEqualTo(testElement);
+    }
+
+    @Test
+    public void testGetComparisonFailure_no_file_path_in_message_but_approvalVerifyWasUsed_fileDoesNotExistYet()
+            throws Exception {
+        // given
+        File approvalTestReceived = new File("test-resources/approvaltest", "SampleServiceTest.testCase.received.txt");
+        assertThat(approvalTestReceived).canRead();
+        File approvalTestApproved = new File("test-resources/approvaltest", "SampleServiceTest.testCase.approved.txt");
+        MockTestCaseElement testElement = new MockTestCaseElement(
+                TestUtils.readTestFile("selection/failureTraceWithApprovalsVerify.txt"), "expected value",
+                "actual value");
+        testElement.setTestClassName("approvaltest.SampleServiceTest");
+        testElement.setTestMethodName("testCase");
+        new MockTestElementContainer(testElement);
+        underTest = new FailureWithFilePathSelection(testElement);
+        // when
+        FailureWithFilePathDto actual = underTest.getFailureInfo();
+        // then
+        assertThat(actual).isNotNull();
+        assertThat(underTest.hasFailureInfo()).isTrue();
+        assertThat(actual.getFilePath()).isNotNull();
+        assertThat(actual.getFilePath().getAbsolutePath())
+                .isEqualTo(approvalTestApproved.getAbsolutePath());
+        assertThat(underTest.getTestElement()).isEqualTo(testElement);
     }
 
     @Test

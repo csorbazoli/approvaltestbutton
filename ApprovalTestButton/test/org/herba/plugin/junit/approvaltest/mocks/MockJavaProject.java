@@ -29,6 +29,14 @@ public class MockJavaProject implements IJavaProject {
     private IResource resource;
 
     @Override
+    public IResource getResource() {
+        if (resource == null) {
+            resource = new MockResource();
+        }
+        return resource;
+    }
+
+    @Override
     public IJavaElement[] getChildren() throws JavaModelException {
         throw new UnsupportedOperationException("NOT_IMPLEMENTED");
     }
@@ -101,14 +109,6 @@ public class MockJavaProject implements IJavaProject {
     @Override
     public IJavaElement getPrimaryElement() {
         throw new UnsupportedOperationException("NOT_IMPLEMENTED");
-    }
-
-    @Override
-    public IResource getResource() {
-        if (resource == null) {
-            resource = new MockResource();
-        }
-        return resource;
     }
 
     @Override
