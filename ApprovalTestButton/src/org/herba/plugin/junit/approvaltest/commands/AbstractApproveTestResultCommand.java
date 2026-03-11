@@ -71,7 +71,7 @@ public class AbstractApproveTestResultCommand extends AbstractHandler {
         logger.severe(message + excDetails);
         MessageDialog.openError(null, "Approval failure",
                 message + excDetails);
-        OpenTestResourceCommand.openEditor(failureInfo);
+        OpenTestResourceCommand.openEditor(failureInfo.getFilePath());
     }
 
 }
