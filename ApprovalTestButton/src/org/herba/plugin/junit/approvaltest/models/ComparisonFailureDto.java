@@ -2,18 +2,21 @@ package org.herba.plugin.junit.approvaltest.models;
 
 import java.io.File;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-@AllArgsConstructor
-public class ComparisonFailureDto {
+public class ComparisonFailureDto extends FailureWithFilePathDto {
 
-    private String message;
     private String actual;
     private String expected;
-    private File filePath;
 
+    public ComparisonFailureDto(String message, String actualContent, String expectedContent, File filePath) {
+        super(message, filePath);
+        this.actual = actualContent;
+        this.expected = expectedContent;
+    }
 }

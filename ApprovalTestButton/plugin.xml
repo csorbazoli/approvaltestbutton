@@ -111,7 +111,7 @@
                      ifEmpty="false"
                      operator="or">
                   <adapt
-                        type="org.herba.plugin.junit.approvaltest.handlers.ComparisonFailureSelection">
+                        type="org.herba.plugin.junit.approvaltest.handlers.FailureWithFilePathSelection">
                   </adapt>
                </iterate>
             </with>
@@ -138,6 +138,7 @@
          </command>
       </menuContribution>
       <menuContribution
+            allPopups="true"
             locationURI="menu:org.herba.plugin.junit.toolbar.submenu">
          <command
                commandId="org.herba.plugin.junit.compareTestResult"
@@ -185,6 +186,9 @@
          </adapter>
          <adapter
                type="org.herba.plugin.junit.approvaltest.handlers.ComparisonFailureSelectionAny">
+         </adapter>
+         <adapter
+               type="org.herba.plugin.junit.approvaltest.handlers.FailureWithFilePathSelection">
          </adapter>
       </factory>
    </extension>

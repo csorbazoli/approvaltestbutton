@@ -46,7 +46,7 @@ public class AbstractApproveTestResultCommand extends AbstractHandler {
         ComparisonFailureDto ret = null;
         try {
             if (element instanceof ITestElement) {
-                ret = new ComparisonFailureSelection((ITestElement) element).getComparisonFailure();
+                ret = new ComparisonFailureSelection((ITestElement) element).getFailureInfo();
             }
         } catch (Exception e) {
             logger.warning("Failed to get approval test details from test element: " + e.getMessage());

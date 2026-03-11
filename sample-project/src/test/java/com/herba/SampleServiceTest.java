@@ -26,6 +26,16 @@ public class SampleServiceTest {
 	}
 
 	@Test
+	public void testDoSomethingWithFileReference() throws Exception {
+		// given
+		// when
+		String actual = underTest.doSomething();
+		// then
+		assertThat(actual).withFailMessage("There's some problem with samples/SampleService_doSomething.txt")
+				.isEqualTo("TestExpected");
+	}
+
+	@Test
 	public void testDoSomething_assertEquals_relativePathUnderTestResources() throws Exception {
 		// given
 		// when

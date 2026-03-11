@@ -30,10 +30,10 @@ public class ComparisonFailureSelectionTest {
         ITestElement testElement = new MockTestCaseElement("error message", "expected value", "actual value");
         underTest = new ComparisonFailureSelection(testElement);
         // when
-        ComparisonFailureDto actual = underTest.getComparisonFailure();
+        ComparisonFailureDto actual = underTest.getFailureInfo();
         // then
         assertThat(actual).isNull();
-        assertThat(underTest.hasComparisonFailure()).isFalse();
+        assertThat(underTest.hasFailureInfo()).isFalse();
     }
 
     @Test
@@ -43,9 +43,9 @@ public class ComparisonFailureSelectionTest {
                 "expected value", "actual value");
         underTest = new ComparisonFailureSelection(testElement);
         // when
-        ComparisonFailureDto actual = underTest.getComparisonFailure();
+        ComparisonFailureDto actual = underTest.getFailureInfo();
         // then
-        assertThat(underTest.hasComparisonFailure()).isTrue();
+        assertThat(underTest.hasFailureInfo()).isTrue();
         assertThat(actual.getFilePath()).isNotNull();
         assertThat(actual.getFilePath().getPath().replace('\\', '/'))
                 .isEqualTo("c:/myproject/src/test/resources/test.txt");
@@ -60,9 +60,9 @@ public class ComparisonFailureSelectionTest {
                 "expected value", "actual value");
         underTest = new ComparisonFailureSelection(testElement);
         // when
-        ComparisonFailureDto actual = underTest.getComparisonFailure();
+        ComparisonFailureDto actual = underTest.getFailureInfo();
         // then
-        assertThat(underTest.hasComparisonFailure()).isTrue();
+        assertThat(underTest.hasFailureInfo()).isTrue();
         assertThat(actual.getFilePath()).isNotNull();
         assertThat(actual.getFilePath().getPath().replace('\\', '/'))
                 .isEqualTo("src/test/resources/test.txt");
@@ -78,9 +78,9 @@ public class ComparisonFailureSelectionTest {
         MockLocation.setBasePath("c:/myproject");
         underTest = new ComparisonFailureSelection(testElement);
         // when
-        ComparisonFailureDto actual = underTest.getComparisonFailure();
+        ComparisonFailureDto actual = underTest.getFailureInfo();
         // then
-        assertThat(underTest.hasComparisonFailure()).isTrue();
+        assertThat(underTest.hasFailureInfo()).isTrue();
         assertThat(actual.getFilePath()).isNotNull();
         assertThat(actual.getFilePath().getPath().replace('\\', '/'))
                 .isEqualTo("c:/myproject/src/test/resources/test.txt");
@@ -99,9 +99,9 @@ public class ComparisonFailureSelectionTest {
         MockLocation.setBasePath("c:/myproject");
         underTest = new ComparisonFailureSelection(testElement);
         // when
-        ComparisonFailureDto actual = underTest.getComparisonFailure();
+        ComparisonFailureDto actual = underTest.getFailureInfo();
         // then
-        assertThat(underTest.hasComparisonFailure()).isTrue();
+        assertThat(underTest.hasFailureInfo()).isTrue();
         assertThat(actual.getFilePath()).isNotNull();
         assertThat(actual.getFilePath().getPath().replace('\\', '/'))
                 .isEqualTo("c:/myproject/src/test/resources/com/herba/someService/test.txt");
@@ -116,9 +116,9 @@ public class ComparisonFailureSelectionTest {
                 "expected value", "actual value");
         underTest = new ComparisonFailureSelection(testElement);
         // when
-        ComparisonFailureDto actual = underTest.getComparisonFailure();
+        ComparisonFailureDto actual = underTest.getFailureInfo();
         // then
-        assertThat(underTest.hasComparisonFailure()).isTrue();
+        assertThat(underTest.hasFailureInfo()).isTrue();
         assertThat(actual.getFilePath()).isNotNull();
         assertThat(actual.getFilePath().getPath().replace('\\', '/'))
                 .isEqualTo("c:/myproject/src/test-resources/abc-123_{}+()=[],@~#;%$!.txt");
@@ -130,10 +130,10 @@ public class ComparisonFailureSelectionTest {
         ITestElement testElement = new MockTestCaseElement(new RuntimeException("error message"));
         underTest = new ComparisonFailureSelection(testElement);
         // when
-        ComparisonFailureDto actual = underTest.getComparisonFailure();
+        ComparisonFailureDto actual = underTest.getFailureInfo();
         // then
         assertThat(actual).isNull();
-        assertThat(underTest.hasComparisonFailure()).isFalse();
+        assertThat(underTest.hasFailureInfo()).isFalse();
     }
 
     @Test
@@ -146,9 +146,9 @@ public class ComparisonFailureSelectionTest {
                 + "Received:" + approvalTestReceived.getAbsolutePath()));
         underTest = new ComparisonFailureSelection(testElement);
         // when
-        ComparisonFailureDto actual = underTest.getComparisonFailure();
+        ComparisonFailureDto actual = underTest.getFailureInfo();
         // then
-        assertThat(underTest.hasComparisonFailure()).isTrue();
+        assertThat(underTest.hasFailureInfo()).isTrue();
         assertThat(actual.getFilePath()).isNotNull();
         assertThat(actual.getFilePath().getAbsolutePath()).isEqualTo(approvalTestApproved.getAbsolutePath());
         actual.setFilePath(null);
@@ -170,9 +170,9 @@ public class ComparisonFailureSelectionTest {
                 "actual text");
         underTest = new ComparisonFailureSelection(testElement);
         // when
-        ComparisonFailureDto actual = underTest.getComparisonFailure();
+        ComparisonFailureDto actual = underTest.getFailureInfo();
         // then
-        assertThat(underTest.hasComparisonFailure()).isTrue();
+        assertThat(underTest.hasFailureInfo()).isTrue();
         assertThat(actual.getFilePath()).isNotNull();
         assertThat(actual.getFilePath().getAbsolutePath()).isEqualTo(approvalTestApproved.getAbsolutePath());
         actual.setFilePath(null);
@@ -185,10 +185,10 @@ public class ComparisonFailureSelectionTest {
         // given
         underTest = new ComparisonFailureSelection(null);
         // when
-        ComparisonFailureDto actual = underTest.getComparisonFailure();
+        ComparisonFailureDto actual = underTest.getFailureInfo();
         // then
         assertThat(actual).isNull();
-        assertThat(underTest.hasComparisonFailure()).isFalse();
+        assertThat(underTest.hasFailureInfo()).isFalse();
         assertThat(underTest.getTestElement()).isNull();
     }
 
