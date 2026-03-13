@@ -1,6 +1,7 @@
 {
   "message" : "org.junit.ComparisonFailure: Failed Approval",
-  "filePath" : null,
+  "filePath" : "c:\\test\\dummy.file",
+  "fileNameOnly" : null,
   "actual" : "NEW",
   "expected" : ""
 }

@@ -68,7 +68,7 @@ public class FailureWithFilePathSelection {
 
     private FailureWithFilePathDto convertToDto(ITestElement element, String failureTrace) {
         return new FailureWithFilePathDto(firstLineFrom(failureTrace),
-                getFilePathFromFailure(element, failureTrace));
+                getFilePathFromFailure(element, failureTrace), null);
     }
 
     private File getFilePathFromFailure(ITestElement element, String failureTrace) {
@@ -141,7 +141,11 @@ public class FailureWithFilePathSelection {
     }
 
     private FailureWithFilePathDto convertFromApprovalTestError(ITestElement element, String failureTrace) {
-        File actualFilePath = extraceReceivedPath(element, failureTrace);
+        File actualFilePath = extractReceivedPath(element, failureTrace);
+        if (actualFilePath == null) {
+            return new FailureWithFilePathDto(firstLineFrom(element.getFailureTrace().getTrace()),
+                    null, getDefaultFileNameWithoutExtension(element));
+        }
         File expectedFilePath = extractApprovedPath(element, failureTrace, actualFilePath);
         String expectedContent = readFileContent(expectedFilePath);
         String actualContent = readFileContent(actualFilePath);
@@ -149,7 +153,7 @@ public class FailureWithFilePathSelection {
                 actualContent, expectedContent, expectedFilePath);
     }
 
-    private File extraceReceivedPath(ITestElement element, String failureTrace) {
+    private File extractReceivedPath(ITestElement element, String failureTrace) {
         File ret = extractPath(failureTrace, "Received:");
         if (ret == null && element instanceof ITestCaseElement) {
             ret = determineFilePath((ITestCaseElement) element, "received");
@@ -170,13 +174,25 @@ public class FailureWithFilePathSelection {
     }
 
     private File determineFilePath(ITestCaseElement element, String type) {
-        // what if it's a json file or other extension?
         // try finding the file in the folder structure just by the name without
-        // extension?
+        // extension
         return org.herba.plugin.junit.approvaltest.utils.ApprovalTestFileUtils.findFileByNameInWorkspace(
                 determineProjectBaseFolder(element),
-                String.join(".", element.getTestClassName().substring(element.getTestClassName().lastIndexOf('.') + 1),
-                        element.getTestMethodName(), type));
+                getDefaultFileNameWithoutExtension(element, type));
+    }
+
+    private String getDefaultFileNameWithoutExtension(ITestElement element) {
+        if (element instanceof ITestCaseElement) {
+            ITestCaseElement tc = (ITestCaseElement) element;
+            return String.join(".", tc.getTestClassName().substring(tc.getTestClassName().lastIndexOf('.') + 1),
+                    tc.getTestMethodName(), "*", "approved");
+        }
+        return null;
+    }
+
+    private String getDefaultFileNameWithoutExtension(ITestCaseElement element, String type) {
+        return String.join(".", element.getTestClassName().substring(element.getTestClassName().lastIndexOf('.') + 1),
+                element.getTestMethodName(), type);
     }
 
     private String readFileContent(File file) {

@@ -13,5 +13,9 @@ public class FailureWithFilePathDto {
 
     private String message;
     private File filePath;
+    /**
+     * When exact file path was not found
+     */
+    private String fileNameOnly;
 
 }

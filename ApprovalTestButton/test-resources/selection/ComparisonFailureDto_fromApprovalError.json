@@ -1,6 +1,7 @@
 {
   "message" : "java.lang.AssertionError: Failed Approval",
-  "filePath" : null,
+  "filePath" : "c:\\test\\dummy.file",
+  "fileNameOnly" : null,
   "actual" : "NEW",
   "expected" : ""
 }

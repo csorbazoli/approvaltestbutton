@@ -1,6 +1,7 @@
 {
   "message" : "org.junit.ComparisonFailure: org.junit.ComparisonFailure: expected:<[]> but was:<[OK",
-  "filePath" : null,
+  "filePath" : "c:\\test\\dummy.file",
+  "fileNameOnly" : null,
   "actual" : "received value",
   "expected" : "approved value"
 }

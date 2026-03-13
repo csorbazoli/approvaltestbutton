@@ -1,4 +1,5 @@
 {
   "message" : "org.junit.ComparisonFailure: error message for src/test/resources/test.txt expected:<[expected] value> but was:<[actual] value>",
-  "filePath" : null
+  "filePath" : "c:\\test\\dummy.file",
+  "fileNameOnly" : null
 }

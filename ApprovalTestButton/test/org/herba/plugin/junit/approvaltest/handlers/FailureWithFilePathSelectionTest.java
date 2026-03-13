@@ -46,8 +46,7 @@ public class FailureWithFilePathSelectionTest {
     @Test
     public void testGetComparisonFailure_no_file_path_in_message_but_approvalVerifyWasUsed() throws Exception {
         // given
-        File approvalTestApproved = new File("test-resources/approvaltest",
-                "SomeTest.testSomething_shouldDo.approved.txt");
+        File approvalTestApproved = assertApprovalTestFileExists("SomeTest.testSomething_shouldDo.approved.txt");
         MockTestCaseElement testElement = new MockTestCaseElement(
                 TestUtils.readTestFile("selection/failureTraceWithApprovalsVerify.txt"), "expected value",
                 "actual value");
@@ -61,7 +60,7 @@ public class FailureWithFilePathSelectionTest {
         assertThat(actual.getFilePath()).isNotNull();
         assertThat(actual.getFilePath().getAbsolutePath())
                 .isEqualTo(approvalTestApproved.getAbsolutePath());
-        actual.setFilePath(null);
+        actual.setFilePath(new File("c:/test/dummy.file"));
         TestUtils.assertTestFileEquals("selection/FailureWithFilePathDto_derivedFromApprovalFailure.json", actual);
         assertThat(underTest.getTestElement()).isEqualTo(testElement);
     }
@@ -70,9 +69,8 @@ public class FailureWithFilePathSelectionTest {
     public void testGetComparisonFailure_no_file_path_in_message_but_approvalVerifyWasUsed_fileDoesNotExistYet()
             throws Exception {
         // given
-        File approvalTestReceived = new File("test-resources/approvaltest", "SampleServiceTest.testCase.received.txt");
-        assertThat(approvalTestReceived).canRead();
-        File approvalTestApproved = new File("test-resources/approvaltest", "SampleServiceTest.testCase.approved.txt");
+        assertApprovalTestFileExists("SampleServiceTest.testCase.received.txt");
+        File approvalTestApproved = assertApprovalTestFileDoesNotExist("SampleServiceTest.testCase.approved.txt");
         MockTestCaseElement testElement = new MockTestCaseElement(
                 TestUtils.readTestFile("selection/failureTraceWithApprovalsVerify.txt"), "expected value",
                 "actual value");
@@ -88,6 +86,32 @@ public class FailureWithFilePathSelectionTest {
         assertThat(actual.getFilePath()).isNotNull();
         assertThat(actual.getFilePath().getAbsolutePath())
                 .isEqualTo(approvalTestApproved.getAbsolutePath());
+        assertThat(underTest.getTestElement()).isEqualTo(testElement);
+    }
+
+    @Test
+    public void testGetComparisonFailure_no_path_approvalVerify_noExactMatchForReceived_dontLookForApproved()
+            throws Exception {
+        // given
+        assertApprovalTestFileExists("SampleServiceTest.parameterizedTestCase.first.received.txt");
+        assertApprovalTestFileExists("SampleServiceTest.parameterizedTestCase.second.received.txt");
+        assertApprovalTestFileExists("SampleServiceTest.parameterizedTestCase.first.approved.txt");
+        assertApprovalTestFileDoesNotExist(
+                "SampleServiceTest.parameterizedTestCase.second.approved.txt");
+        MockTestCaseElement testElement = new MockTestCaseElement(
+                TestUtils.readTestFile("selection/failureTraceWithApprovalsVerify.txt"), "expected value",
+                "actual value");
+        testElement.setTestClassName("approvaltest.SampleServiceTest");
+        testElement.setTestMethodName("parameterizedTestCase");
+        new MockTestElementContainer(testElement);
+        underTest = new FailureWithFilePathSelection(testElement);
+        // when
+        FailureWithFilePathDto actual = underTest.getFailureInfo();
+        // then
+        assertThat(actual).isNotNull();
+        assertThat(underTest.hasFailureInfo()).isTrue();
+        assertThat(actual.getFilePath()).isNull();
+        assertThat(actual.getFileNameOnly()).isEqualTo("SampleServiceTest.parameterizedTestCase.*.approved");
         assertThat(underTest.getTestElement()).isEqualTo(testElement);
     }
 
@@ -139,7 +163,7 @@ public class FailureWithFilePathSelectionTest {
         assertThat(actual.getFilePath()).isNotNull();
         assertThat(actual.getFilePath().getPath().replace('\\', '/'))
                 .isEqualTo("c:/myproject/src/test/resources/test.txt");
-        actual.setFilePath(null);
+        actual.setFilePath(new File("c:/test/dummy.file"));
         TestUtils.assertTestFileEquals("selection/FailureWithFilePathDto_relative.json", actual);
         assertThat(underTest.getTestElement()).isEqualTo(testElement);
     }
@@ -194,8 +218,8 @@ public class FailureWithFilePathSelectionTest {
     @Test
     public void testGetComparisonFailure_shouldReturnTrueIfApprovalTestError() throws Exception {
         // given
-        File approvalTestReceived = new File("test-resources/approvaltest", "SampleServiceTest.testCase.received.txt");
-        File approvalTestApproved = new File("test-resources/approvaltest", "SampleServiceTest.testCase.approved.txt");
+        File approvalTestReceived = assertApprovalTestFileExists("SampleServiceTest.testCase.received.txt");
+        File approvalTestApproved = assertApprovalTestFileDoesNotExist("SampleServiceTest.testCase.approved.txt");
         ITestElement testElement = new MockTestCaseElement(new AssertionError("Failed Approval\r\n"
                 + "Approved:" + approvalTestApproved.getAbsolutePath() + "\r\n"
                 + "Received:" + approvalTestReceived.getAbsolutePath()));
@@ -206,7 +230,7 @@ public class FailureWithFilePathSelectionTest {
         assertThat(underTest.hasFailureInfo()).isTrue();
         assertThat(actual.getFilePath()).isNotNull();
         assertThat(actual.getFilePath().getAbsolutePath()).isEqualTo(approvalTestApproved.getAbsolutePath());
-        actual.setFilePath(null);
+        actual.setFilePath(new File("c:/test/dummy.file"));
         TestUtils.assertTestFileEquals("selection/FailureWithFilePathDto_fromApprovalError.json", actual);
         assertThat(underTest.getTestElement()).isEqualTo(testElement);
     }
@@ -215,8 +239,8 @@ public class FailureWithFilePathSelectionTest {
     public void testGetComparisonFailure_shouldReturnTrueIfComparisonFailureWithApprovalErrorMessage()
             throws Exception {
         // given
-        File approvalTestReceived = new File("test-resources/approvaltest", "SampleServiceTest.testCase.received.txt");
-        File approvalTestApproved = new File("test-resources/approvaltest", "SampleServiceTest.testCase.approved.txt");
+        File approvalTestReceived = assertApprovalTestFileExists("SampleServiceTest.testCase.received.txt");
+        File approvalTestApproved = assertApprovalTestFileDoesNotExist("SampleServiceTest.testCase.approved.txt");
         ITestElement testElement = new MockTestCaseElement(
                 "Failed Approval\r\n"
                         + "Approved:" + approvalTestApproved.getAbsolutePath() + "\r\n"
@@ -230,7 +254,7 @@ public class FailureWithFilePathSelectionTest {
         assertThat(underTest.hasFailureInfo()).isTrue();
         assertThat(actual.getFilePath()).isNotNull();
         assertThat(actual.getFilePath().getAbsolutePath()).isEqualTo(approvalTestApproved.getAbsolutePath());
-        actual.setFilePath(null);
+        actual.setFilePath(new File("c:/test/dummy.file"));
         TestUtils.assertTestFileEquals("selection/FailureWithFilePathDto_fromApprovalMessage.json", actual);
         assertThat(underTest.getTestElement()).isEqualTo(testElement);
     }
@@ -245,6 +269,18 @@ public class FailureWithFilePathSelectionTest {
         assertThat(actual).isNull();
         assertThat(underTest.hasFailureInfo()).isFalse();
         assertThat(underTest.getTestElement()).isNull();
+    }
+
+    private File assertApprovalTestFileExists(String fileName) {
+        File approvalTestFile = new File("test-resources/approvaltest", fileName);
+        assertThat(approvalTestFile).canRead();
+        return approvalTestFile;
+    }
+
+    private File assertApprovalTestFileDoesNotExist(String fileName) {
+        File approvalTestFile = new File("test-resources/approvaltest", fileName);
+        assertThat(approvalTestFile).doesNotExist();
+        return approvalTestFile;
     }
 
 }

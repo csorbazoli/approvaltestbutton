@@ -15,7 +15,7 @@ public class ComparisonFailureDto extends FailureWithFilePathDto {
     private String expected;
 
     public ComparisonFailureDto(String message, String actualContent, String expectedContent, File filePath) {
-        super(message, filePath);
+        super(message, filePath, null);
         this.actual = actualContent;
         this.expected = expectedContent;
     }

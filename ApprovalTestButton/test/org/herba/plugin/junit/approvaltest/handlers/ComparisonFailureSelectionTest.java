@@ -84,7 +84,7 @@ public class ComparisonFailureSelectionTest {
         assertThat(actual.getFilePath()).isNotNull();
         assertThat(actual.getFilePath().getPath().replace('\\', '/'))
                 .isEqualTo("c:/myproject/src/test/resources/test.txt");
-        actual.setFilePath(null);
+        actual.setFilePath(new File("c:/test/dummy.file"));
         TestUtils.assertTestFileEquals("selection/ComparisonFailureDto_relative.json", actual);
         assertThat(underTest.getTestElement()).isEqualTo(testElement);
     }
@@ -151,7 +151,7 @@ public class ComparisonFailureSelectionTest {
         assertThat(underTest.hasFailureInfo()).isTrue();
         assertThat(actual.getFilePath()).isNotNull();
         assertThat(actual.getFilePath().getAbsolutePath()).isEqualTo(approvalTestApproved.getAbsolutePath());
-        actual.setFilePath(null);
+        actual.setFilePath(new File("c:/test/dummy.file"));
         TestUtils.assertTestFileEquals("selection/ComparisonFailureDto_fromApprovalError.json", actual);
         assertThat(underTest.getTestElement()).isEqualTo(testElement);
     }
@@ -175,7 +175,7 @@ public class ComparisonFailureSelectionTest {
         assertThat(underTest.hasFailureInfo()).isTrue();
         assertThat(actual.getFilePath()).isNotNull();
         assertThat(actual.getFilePath().getAbsolutePath()).isEqualTo(approvalTestApproved.getAbsolutePath());
-        actual.setFilePath(null);
+        actual.setFilePath(new File("c:/test/dummy.file"));
         TestUtils.assertTestFileEquals("selection/ComparisonFailureDto_fromApprovalMessage.json", actual);
         assertThat(underTest.getTestElement()).isEqualTo(testElement);
     }

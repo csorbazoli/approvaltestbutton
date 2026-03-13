@@ -123,7 +123,7 @@ public class ComparisonFailureSelectionAnyTest {
         assertThat(underTest.hasFailureInfo()).isTrue();
         assertThat(actual.getFilePath()).isNotNull();
         assertThat(actual.getFilePath().getAbsolutePath()).isEqualTo(approvalTestApproved.getAbsolutePath());
-        actual.setFilePath(null);
+        actual.setFilePath(new File("c:/test/dummy.file"));
         TestUtils.assertTestFileEquals("selection/ComparisonFailureDto_fromApprovalError.json", actual);
         assertThat(underTest.getTestElement()).isEqualTo(testElement);
     }
@@ -147,7 +147,7 @@ public class ComparisonFailureSelectionAnyTest {
         assertThat(underTest.hasFailureInfo()).isTrue();
         assertThat(actual.getFilePath()).isNotNull();
         assertThat(actual.getFilePath().getAbsolutePath()).isEqualTo(approvalTestApproved.getAbsolutePath());
-        actual.setFilePath(null);
+        actual.setFilePath(new File("c:/test/dummy.file"));
         TestUtils.assertTestFileEquals("selection/ComparisonFailureDto_fromApprovalMessage.json", actual);
         assertThat(underTest.getTestElement()).isEqualTo(testElement);
     }
