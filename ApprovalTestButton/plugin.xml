@@ -206,6 +206,12 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+V">
       </key>
+      <key
+            commandId="org.herba.plugin.junit.approveTestResult"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+A">
+      </key>
    </extension>
 
 </plugin>
