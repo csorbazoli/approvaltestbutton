@@ -111,7 +111,7 @@ public class FailureWithFilePathSelectionTest {
         assertThat(actual).isNotNull();
         assertThat(underTest.hasFailureInfo()).isTrue();
         assertThat(actual.getFilePath()).isNull();
-        assertThat(actual.getFileNameOnly()).isEqualTo("SampleServiceTest.parameterizedTestCase.*.approved");
+        assertThat(actual.getFileNameOnly()).isEqualTo("SampleServiceTest.parameterizedTestCase*.approved");
         assertThat(underTest.getTestElement()).isEqualTo(testElement);
     }
 

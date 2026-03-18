@@ -142,7 +142,7 @@ public class FailureWithFilePathSelection {
 
     private FailureWithFilePathDto convertFromApprovalTestError(ITestElement element, String failureTrace) {
         File actualFilePath = extractReceivedPath(element, failureTrace);
-        if (actualFilePath == null) {
+        if (actualFilePath == null || !actualFilePath.canRead()) {
             return new FailureWithFilePathDto(firstLineFrom(element.getFailureTrace().getTrace()),
                     null, getDefaultFileNameWithoutExtension(element));
         }
@@ -185,7 +185,7 @@ public class FailureWithFilePathSelection {
         if (element instanceof ITestCaseElement) {
             ITestCaseElement tc = (ITestCaseElement) element;
             return String.join(".", tc.getTestClassName().substring(tc.getTestClassName().lastIndexOf('.') + 1),
-                    tc.getTestMethodName(), "*", "approved");
+                    tc.getTestMethodName() + "*", "approved");
         }
         return null;
     }

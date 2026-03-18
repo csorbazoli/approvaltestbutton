@@ -37,6 +37,7 @@ public class ComparisonFailureSelection extends FailureWithFilePathSelection {
             FailureTrace failureTrace = element.getFailureTrace();
             failure = new ComparisonFailureDto(pathInfo.getMessage(), failureTrace.getActual(),
                     failureTrace.getExpected(), pathInfo.getFilePath());
+            failure.setFileNameOnly(pathInfo.getFileNameOnly());
         }
 
         return failure;

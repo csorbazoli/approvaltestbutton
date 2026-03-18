@@ -84,6 +84,18 @@ public class SampleServiceTest {
 	}
 
 	@Test
+	public void testDoSomething_approvalTest_withJunitReporter_differentFileName() throws Exception {
+		// given
+		// when
+		String actual = underTest.doSomething();
+		// then
+		// QuietReporter, ReportNothing, AutoApproveWhenEmptyReporter,
+		// InlineJavaReporter
+		Approvals.verify(actual,
+				Approvals.NAMES.withParameters("first").and(func -> new Options(new Junit4Reporter())));
+	}
+
+	@Test
 	public void testDoSomething_approvalTest_default() throws Exception {
 		// given
 		// when

@@ -14,8 +14,13 @@ public class CompareTestResultCommand extends AbstractApproveTestResultCommand {
     @Override
     protected boolean handleSelection(Object selectedElement) {
         ComparisonFailureDto failureInfo = getComparisonFailureDetails(selectedElement);
-        if (failureInfo != null && failureInfo.getFilePath() != null) {
-            return openComparisonView(failureInfo);
+        if (failureInfo != null) {
+            if (failureInfo.getFilePath() == null && failureInfo.getFileNameOnly() != null) {
+                failureInfo.setFilePath(findFile(failureInfo.getFileNameOnly()));
+            }
+            if (failureInfo.getFilePath() != null) {
+                return openComparisonView(failureInfo);
+            }
         }
         return false;
     }

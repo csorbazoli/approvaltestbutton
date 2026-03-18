@@ -1,16 +1,22 @@
 package org.herba.plugin.junit.approvaltest.commands;
 
+import java.io.File;
 import java.util.logging.Logger;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jdt.junit.model.ITestElement;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.dialogs.FilteredResourcesSelectionDialog;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.herba.plugin.junit.approvaltest.handlers.ComparisonFailureSelection;
 import org.herba.plugin.junit.approvaltest.models.ComparisonFailureDto;
@@ -72,6 +78,31 @@ public class AbstractApproveTestResultCommand extends AbstractHandler {
         MessageDialog.openError(null, "Approval failure",
                 message + excDetails);
         OpenTestResourceCommand.openEditor(failureInfo.getFilePath());
+    }
+
+    protected static File findFile(String fileName) {
+        IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        return findFile(window, fileName);
+    }
+
+    protected static File findFile(IWorkbenchWindow window, String fileName) {
+        FilteredResourcesSelectionDialog dialog = new FilteredResourcesSelectionDialog(
+                window.getShell(),
+                false,
+                ResourcesPlugin.getWorkspace().getRoot(),
+                IResource.FILE);
+
+        dialog.setTitle("Open Resource");
+        dialog.setInitialPattern(fileName);
+
+        if (dialog.open() == IDialogConstants.OK_ID) {
+            Object[] result = dialog.getResult();
+            if (result != null && result.length > 0) {
+                return ((IFile) result[0]).getLocation().toFile();
+            }
+        }
+
+        return null;
     }
 
 }
